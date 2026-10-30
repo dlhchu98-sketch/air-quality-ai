@@ -54,6 +54,10 @@ app.include_router(evaluation.router)
 STATIC_DIR = BASE_DIR / "static"
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+    if (STATIC_DIR / "css").exists():
+        app.mount("/css", StaticFiles(directory=str(STATIC_DIR / "css")), name="css")
+    if (STATIC_DIR / "js").exists():
+        app.mount("/js", StaticFiles(directory=str(STATIC_DIR / "js")), name="js")
 
 @app.get("/")
 async def root():
