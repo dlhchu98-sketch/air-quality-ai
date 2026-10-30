@@ -2,7 +2,7 @@
   "name": "AirSense AI - Dự Báo Chất Lượng Không Khí",
   "short_name": "AirSense AI",
   "description": "Hệ thống AI Dự báo Chất lượng Không khí Không gian - Thời gian",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#2563eb",

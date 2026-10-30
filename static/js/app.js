@@ -83,11 +83,34 @@ const App = {
     });
   },
 
-  // Thiết lập Modal mở trên Điện thoại
+  // Thiết lập Modal mở trên Điện thoại (Quét QR 24/7 không cần bật máy chủ)
   setupMobileModal() {
     const modal = document.getElementById('mobile-qr-modal');
     const openBtn = document.getElementById('btn-mobile-modal');
     const closeBtn = document.getElementById('btn-close-modal');
+
+    const DEFAULT_PUBLIC_URL = 'https://dlhchu98-sketch.github.io/air-quality-ai/';
+    const isLiveCloud = window.location.hostname && 
+      !['localhost', '127.0.0.1'].includes(window.location.hostname) && 
+      !window.location.hostname.startsWith('192.168.');
+    
+    let activeUrl = isLiveCloud ? window.location.href.split('#')[0] : DEFAULT_PUBLIC_URL;
+
+    const setQRDisplay = (url) => {
+      const qrImg = document.getElementById('qr-img');
+      const urlText = document.getElementById('mobile-url-text');
+      if (qrImg) qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=' + encodeURIComponent(url);
+      if (urlText) urlText.innerText = url;
+    };
+
+    setQRDisplay(activeUrl);
+
+    // Đồng bộ từ server nếu có
+    fetch('/api/network-info').then(res => res.json()).then(data => {
+      if (data && data.direct_url) {
+        setQRDisplay(data.direct_url);
+      }
+    }).catch(() => {});
 
     if (openBtn && modal) {
       openBtn.addEventListener('click', () => {
