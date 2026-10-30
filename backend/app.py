@@ -67,6 +67,20 @@ async def root():
         return FileResponse(index_file)
     return {"message": "Air Quality Forecasting API is running. Visit /docs for Swagger UI."}
 
+@app.get("/manifest.json")
+async def manifest():
+    manifest_file = STATIC_DIR / "manifest.json"
+    if manifest_file.exists():
+        return FileResponse(manifest_file, media_type="application/manifest+json")
+    return {}
+
+@app.get("/sw.js")
+async def service_worker():
+    sw_file = STATIC_DIR / "sw.js"
+    if sw_file.exists():
+        return FileResponse(sw_file, media_type="application/javascript")
+    return {}
+
 if __name__ == "__main__":
     import uvicorn
     print("=" * 60)

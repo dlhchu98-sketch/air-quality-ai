@@ -342,7 +342,8 @@ const App = {
         this.districtLayer.addData(geojson);
       }
 
-      this.stationLayer.clearLayers();
+      if (latest && latest.length) {
+        this.stationLayer.clearLayers();
 
         latest.forEach(st => {
           const marker = L.circleMarker([st.latitude, st.longitude], {
