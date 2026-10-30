@@ -1,10 +1,11 @@
 // Service Worker for AirSense AI PWA
-const CACHE_NAME = 'airsense-ai-v1';
+const CACHE_NAME = 'airsense-ai-v2';
 const STATIC_ASSETS = [
   '/',
-  '/static/css/style.css',
-  '/static/js/app.js',
-  '/static/manifest.json'
+  'css/style.css',
+  'js/app.js?v=2',
+  'js/embedded_data.js?v=2',
+  'manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
