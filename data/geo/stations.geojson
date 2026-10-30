@@ -1,0 +1,147 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_01",
+        "station_name": "Trạm Hoàn Kiếm (Đinh Tiên Hoàng)",
+        "district": "Hoàn Kiếm",
+        "station_type": "Giao thông đô thị",
+        "elevation_m": 12.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8542,
+          21.0285
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_02",
+        "station_name": "Trạm Ba Đình (Kim Mã)",
+        "district": "Ba Đình",
+        "station_type": "Khu dân cư hỗn hợp",
+        "elevation_m": 14.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8235,
+          21.0333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_03",
+        "station_name": "Trạm Cầu Giấy (Xuân Thủy)",
+        "district": "Cầu Giấy",
+        "station_type": "Giao thông cửa ngõ",
+        "elevation_m": 10.8
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.7831,
+          21.0368
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_04",
+        "station_name": "Trạm Đống Đa (Nguyễn Lương Bằng)",
+        "district": "Đống Đa",
+        "station_type": "Khu dân cư mật độ cao",
+        "elevation_m": 13.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8267,
+          21.0189
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_05",
+        "station_name": "Trạm Hai Bà Trưng (Minh Khai)",
+        "district": "Hai Bà Trưng",
+        "station_type": "Giao thông & dân cư",
+        "elevation_m": 11.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8569,
+          21.0025
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_06",
+        "station_name": "Trạm Tây Hồ (Lạc Long Quân)",
+        "district": "Tây Hồ",
+        "station_type": "Đô thị sinh thái hồ",
+        "elevation_m": 15.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8123,
+          21.0652
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_07",
+        "station_name": "Trạm Long Biên (Nguyễn Văn Cừ)",
+        "district": "Long Biên",
+        "station_type": "Khu cửa ngõ phía Đông",
+        "elevation_m": 9.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8785,
+          21.0489
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "station_id": "VN_HN_08",
+        "station_name": "Trạm Hà Đông (Quang Trung)",
+        "district": "Hà Đông",
+        "station_type": "Khu đô thị vệ tinh",
+        "elevation_m": 8.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.7725,
+          20.9712
+        ]
+      }
+    }
+  ]
+}

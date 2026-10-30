@@ -1,0 +1,319 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Hoàn Kiếm",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.845,
+              21.022
+            ],
+            [
+              105.862,
+              21.02
+            ],
+            [
+              105.865,
+              21.036
+            ],
+            [
+              105.85,
+              21.04
+            ],
+            [
+              105.842,
+              21.031
+            ],
+            [
+              105.845,
+              21.022
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Ba Đình",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.81,
+              21.025
+            ],
+            [
+              105.842,
+              21.025
+            ],
+            [
+              105.845,
+              21.045
+            ],
+            [
+              105.825,
+              21.05
+            ],
+            [
+              105.808,
+              21.038
+            ],
+            [
+              105.81,
+              21.025
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Cầu Giấy",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.77,
+              21.02
+            ],
+            [
+              105.805,
+              21.02
+            ],
+            [
+              105.81,
+              21.048
+            ],
+            [
+              105.778,
+              21.052
+            ],
+            [
+              105.765,
+              21.035
+            ],
+            [
+              105.77,
+              21.02
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Đống Đa",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.812,
+              21.005
+            ],
+            [
+              105.838,
+              21.008
+            ],
+            [
+              105.842,
+              21.025
+            ],
+            [
+              105.815,
+              21.028
+            ],
+            [
+              105.808,
+              21.018
+            ],
+            [
+              105.812,
+              21.005
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Hai Bà Trưng",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.838,
+              20.99
+            ],
+            [
+              105.87,
+              20.995
+            ],
+            [
+              105.872,
+              21.02
+            ],
+            [
+              105.842,
+              21.02
+            ],
+            [
+              105.838,
+              20.99
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Tây Hồ",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.8,
+              21.045
+            ],
+            [
+              105.845,
+              21.045
+            ],
+            [
+              105.85,
+              21.085
+            ],
+            [
+              105.81,
+              21.09
+            ],
+            [
+              105.795,
+              21.065
+            ],
+            [
+              105.8,
+              21.045
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Long Biên",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.865,
+              21.025
+            ],
+            [
+              105.91,
+              21.03
+            ],
+            [
+              105.92,
+              21.075
+            ],
+            [
+              105.87,
+              21.08
+            ],
+            [
+              105.86,
+              21.05
+            ],
+            [
+              105.865,
+              21.025
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "district_name": "Hà Đông",
+        "city": "Hà Nội",
+        "country": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              105.75,
+              20.95
+            ],
+            [
+              105.795,
+              20.955
+            ],
+            [
+              105.8,
+              20.985
+            ],
+            [
+              105.76,
+              20.99
+            ],
+            [
+              105.745,
+              20.97
+            ],
+            [
+              105.75,
+              20.95
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

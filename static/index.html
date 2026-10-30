@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AirSense AI - Hệ Thống Dự Báo Chất Lượng Không Khí Đô Thị</title>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Leaflet CSS for GeoPandas Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AirSense AI">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3222/3222800.png">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-wind"></i></div>
+        <div class="brand-text">
+          <h2>AirSense AI</h2>
+          <span>GeoPandas & ML Forecast</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-tab="tab-overview">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>1. Tổng quan</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-map">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>2. Bản đồ không gian</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-forecast">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>3. Dự báo AI</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-results">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>4. Kết quả & Phân tích</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-evaluation">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span>5. Đánh giá mô hình</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-about">
+          <i class="fa-solid fa-book-open"></i>
+          <span>6. Giới thiệu & Hạn chế</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-badge">
+          <span class="status-dot pulse"></span>
+          <span id="backend-status-text">Backend 20 CCU Ready</span>
+        </div>
+        <small class="disclaimer-mini">Mục đích học tập & nghiên cứu</small>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="page-title-box">
+          <h1 id="page-title">Tổng quan Chất lượng Không khí</h1>
+          <p id="page-subtitle">Giám sát chuỗi thời gian & dự báo đa bước tại 8 trạm đô thị Hà Nội</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="time-chip" id="current-clock">
+            <i class="fa-regular fa-clock"></i> <span id="clock-val">Đang tải...</span>
+          </div>
+          <button class="btn btn-outline" id="btn-refresh" title="Làm mới dữ liệu">
+            <i class="fa-solid fa-arrows-rotate"></i> Làm mới
+          </button>
+          <button class="btn btn-primary" id="btn-mobile-modal" title="Mở trên điện thoại qua Wi-Fi">
+            <i class="fa-solid fa-mobile-screen-button"></i> <span>Dùng trên ĐT</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: TỔNG QUAN -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="stat-grid">
+          <div class="stat-card primary">
+            <div class="stat-header">
+              <span>AQI Trung Bình Đô Thị</span>
+              <i class="fa-solid fa-smog"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="overview-aqi-val">--</h2>
+              <span class="badge" id="overview-aqi-badge">Đang tính...</span>
+            </div>
+            <div class="stat-footer" id="overview-aqi-desc">Chỉ số bụi mịn PM2.5 trung bình 8 quận</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Bụi Mịn PM2.5</span>
+              <i class="fa-solid fa-microscope"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="overview-pm25-val">--</h2>
+              <span class="unit">µg/m³</span>
+            </div>
+            <div class="stat-footer">QCVN 05:2023 chuẩn 24h = 50 µg/m³</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <span>Nhiệt độ & Độ ẩm</span>
+              <i class="fa-solid fa-temperature-half"></i>
+            </div>
+            <div class="stat-body">
+              <h2 id="overview-weather-val">--°C</h2>
+              <span class="unit" id="overview-humidity-val">--% RH</span>
+            </div>
+            <div class="stat-footer" id="overview-wind-val">Gió: -- m/s</div>
+          </div>
+
+          <div class="stat-card success">
+            <div class="stat-header">
+              <span>Hạ Tầng GeoPandas</span>
+              <i class="fa-solid fa-satellite"></i>
+            </div>
+            <div class="stat-body">
+              <h2>8 / 8</h2>
+              <span class="badge badge-success">Online</span>
+            </div>
+            <div class="stat-footer">Hệ tọa độ WGS84 (EPSG:4326) & UTM 48N</div>
+          </div>
+        </div>
+
+        <!-- Health Alert Box -->
+        <div class="health-alert-box" id="health-alert-box">
+          <div class="alert-icon"><i class="fa-solid fa-shield-heart"></i></div>
+          <div class="alert-content">
+            <h4 id="health-alert-title">Khuyến nghị Y tế & Sức khỏe Cộng đồng</h4>
+            <p id="health-alert-desc">Đang tải thông tin khuyến nghị sức khỏe theo mức độ ô nhiễm không khí...</p>
+          </div>
+        </div>
+
+        <!-- Stations Table Summary -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-tower-observation"></i> Trạng Thái Quan Trắc Tại 8 Trạm Không Gian</h3>
+            <span class="card-tag">Dữ liệu quan trắc gần nhất</span>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã Trạm</th>
+                    <th>Tên Trạm</th>
+                    <th>Quận</th>
+                    <th>Khoảng Cách Tâm</th>
+                    <th>PM2.5 (µg/m³)</th>
+                    <th>PM10 (µg/m³)</th>
+                    <th>NO2 (µg/m³)</th>
+                    <th>Chất Lượng AQI</th>
+                    <th>Hành Động</th>
+                  </tr>
+                </thead>
+                <tbody id="overview-stations-tbody">
+                  <tr><td colspan="9" class="text-center">Đang tải dữ liệu mạng lưới trạm...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: BẢN ĐỒ KHÔNG GIAN -->
+      <section id="tab-map" class="tab-pane">
+        <div class="map-controls-card">
+          <div class="filter-group">
+            <label><i class="fa-solid fa-layer-group"></i> Hiển thị lớp:</label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="layer-districts-check" checked> Ranh giới quận GeoPandas
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="layer-stations-check" checked> Điểm trạm quan trắc (8 trạm)
+            </label>
+          </div>
+          <div class="legend-bar">
+            <span class="legend-item"><span class="color-dot" style="background:#10b981;"></span> Tốt (0-12)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#f59e0b;"></span> Trung bình (12-35.4)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#f97316;"></span> Kém (35.5-55.4)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#ef4444;"></span> Xấu (55.5-150.4)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#8b5cf6;"></span> Rất xấu (150.5-250)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#881337;"></span> Nguy hại (>250)</span>
+          </div>
+        </div>
+        <div class="map-container-wrapper">
+          <div id="leaflet-map"></div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-body text-muted small">
+            <i class="fa-solid fa-circle-info"></i> <strong>Xử lý địa không gian bằng GeoPandas:</strong> Ranh giới hành chính các quận Hà Nội được chuẩn hóa CRS EPSG:4326. Phép chiếu UTM Zone 48N (EPSG:32648) được áp dụng tại tầng Backend để tính diện tích đa giác ($km^2$) và khoảng cách trạm tới trung tâm Hồ Hoàn Kiếm.
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: DỰ BÁO AI -->
+      <section id="tab-forecast" class="tab-pane">
+        <div class="forecast-form-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-sliders"></i> Cấu Hình Tham Số Dự Báo Chuỗi Thời Gian AI</h3>
+            <span class="card-tag">Autoregressive Forecasting</span>
+          </div>
+          <div class="card-body">
+            <form id="form-run-forecast" class="grid-form">
+              <div class="form-group">
+                <label for="select-station"><i class="fa-solid fa-location-dot"></i> Chọn Trạm Quan Trắc:</label>
+                <select id="select-station" class="form-control" required>
+                  <option value="VN_HN_01">Trạm Hoàn Kiếm (Đinh Tiên Hoàng)</option>
+                  <option value="VN_HN_02">Trạm Ba Đình (Kim Mã)</option>
+                  <option value="VN_HN_03">Trạm Cầu Giấy (Xuân Thủy)</option>
+                  <option value="VN_HN_04">Trạm Đống Đa (Nguyễn Lương Bằng)</option>
+                  <option value="VN_HN_05">Trạm Hai Bà Trưng (Minh Khai)</option>
+                  <option value="VN_HN_06">Trạm Tây Hồ (Lạc Long Quân)</option>
+                  <option value="VN_HN_07">Trạm Long Biên (Nguyễn Văn Cừ)</option>
+                  <option value="VN_HN_08">Trạm Hà Đông (Quang Trung)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="select-model"><i class="fa-solid fa-brain"></i> Chọn Mô Hình AI:</label>
+                <select id="select-model" class="form-control" required>
+                  <option value="Random_Forest" selected>Random Forest Regressor (Khuyên dùng - R²=0.721)</option>
+                  <option value="Neural_Network">Time-Series Neural Network (MLP 64-32 units)</option>
+                  <option value="Baseline">Baseline Persistence (Giờ trước t-1)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="select-horizon"><i class="fa-regular fa-hourglass-half"></i> Khoảng Thời Gian Dự Báo:</label>
+                <select id="select-horizon" class="form-control" required>
+                  <option value="6">6 giờ tiếp theo (Độ tin cậy cao)</option>
+                  <option value="12" selected>12 giờ tiếp theo (Nửa ngày)</option>
+                  <option value="24">24 giờ tiếp theo (Trọn vẹn 1 ngày)</option>
+                </select>
+              </div>
+
+              <div class="form-group form-submit">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100" id="btn-submit-forecast">
+                  <i class="fa-solid fa-bolt"></i> Kích Hoạt Dự Báo AI
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="features-info-grid mt-3">
+          <div class="info-card">
+            <h4><i class="fa-solid fa-diagram-project"></i> Quy Trình Dự Báo</h4>
+            <p>Sử dụng cơ chế Autoregressive không rò rỉ: kết quả dự báo ở bước $t+1$ được đưa vào buffer để tính lag $t+2$ tự sinh, kết hợp hàm mã hóa tuần hoàn thời gian <code>sin/cos</code>.</p>
+          </div>
+          <div class="info-card">
+            <h4><i class="fa-solid fa-microchip"></i> Tối Ưu Tốc Độ</h4>
+            <p>Mô hình được nạp sẵn trong RAM (FastAPI Lifespan). Thời gian suy luận cho 24 bước liên tiếp chỉ mất $\approx 3.2\text{ ms}$, chịu tải tốt 20 người dùng đồng thời.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: KẾT QUẢ & PHÂN TÍCH -->
+      <section id="tab-results" class="tab-pane">
+        <div class="forecast-meta-banner" id="results-banner">
+          <div class="meta-item">
+            <span class="label">Trạm Quan Trắc:</span>
+            <strong id="meta-station-name">Chưa thực hiện dự báo</strong>
+          </div>
+          <div class="meta-item">
+            <span class="label">Mô Hình:</span>
+            <strong id="meta-model-name">--</strong>
+          </div>
+          <div class="meta-item">
+            <span class="label">Thời Điểm Gốc:</span>
+            <strong id="meta-base-time">--</strong>
+          </div>
+          <div class="meta-item">
+            <span class="label">Nồng Độ Hiện Tại:</span>
+            <strong id="meta-current-pm25">-- µg/m³</strong>
+          </div>
+        </div>
+
+        <!-- Biểu đồ phân tích lịch sử + dự báo -->
+        <div class="card mt-3">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-chart-line"></i> Biểu Đồ Chuỗi Thời Gian Lịch Sử & Đường Dự Báo Tương Lai</h3>
+            <span class="card-tag">Chart.js Interactive</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrapper">
+              <canvas id="forecastChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng chi tiết từng bước dự báo -->
+        <div class="card mt-3">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-list-check"></i> Chi Tiết Giá Trị Dự Báo & Khuyến Nghị Sức Khỏe Từng Giờ</h3>
+            <span class="card-tag">Multi-step Table</span>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Bước ($t+k$)</th>
+                    <th>Thời Điểm</th>
+                    <th>PM2.5 Dự Báo</th>
+                    <th>Khoảng Tin Cậy (Min - Max)</th>
+                    <th>Mức Độ AQI</th>
+                    <th>Lời Khuyên Y Tế</th>
+                  </tr>
+                </thead>
+                <tbody id="results-steps-tbody">
+                  <tr><td colspan="6" class="text-center">Vui lòng vào tab "3. Dự báo AI" để thực hiện dự báo.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: ĐÁNH GIÁ MÔ HÌNH -->
+      <section id="tab-evaluation" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-trophy"></i> Bảng So Sánh Chỉ Số Thực Nghiệm Độc Lập Trên Tập Test (5,160 Mẫu)</h3>
+            <span class="card-tag badge-success">Thực Nghiệm Thực Tế</span>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="data-table" id="table-evaluation">
+                <thead>
+                  <tr>
+                    <th>Mô Hình</th>
+                    <th>Phân Loại</th>
+                    <th>MAE (µg/m³) ↓</th>
+                    <th>RMSE (µg/m³) ↓</th>
+                    <th>Hệ Số $R^2$ ↑</th>
+                    <th>Thời Gian Train</th>
+                    <th>Độ Trễ Suy Luận</th>
+                    <th>Số Mẫu Test</th>
+                  </tr>
+                </thead>
+                <tbody id="eval-metrics-tbody">
+                  <tr><td colspan="8" class="text-center">Đang nạp chỉ số thực nghiệm...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="eval-insight-grid mt-3">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-chart-bar"></i> So Sánh Sai Số MAE & RMSE</h3>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper-sm">
+                <canvas id="evalMetricsChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-lightbulb"></i> Phân Tích Kết Quả & Lý Do Chọn Mô Hình</h3>
+            </div>
+            <div class="card-body">
+              <ul class="insight-list">
+                <li><strong>Random Forest vượt trội rõ rệt:</strong> Đạt $R^2 = 0.7211$ và MAE chỉ $9.52\text{ µg/m³}$, giảm $41\%$ sai số so với Baseline ($16.11\text{ µg/m³}$).</li>
+                <li><strong>Ưu thế trên dữ liệu bảng dạng trễ:</strong> Thuật toán Ensemble Tree chia nhánh không gian rất tốt với các tổ hợp đặc trưng phi tuyến và không nhạy cảm với scale dữ liệu.</li>
+                <li><strong>Deep Learning (MLP):</strong> Đạt MAE $16.76\text{ µg/m³}$, cần nhiều dữ liệu hơn và có nguy cơ nhạy cảm với nhiễu cục bộ của dữ liệu chuỗi thời gian nếu không áp dụng kiến trúc không gian - thời gian chuyên sâu.</li>
+                <li><strong>Độ trễ suy luận siêu thấp:</strong> Cả 3 mô hình đều hoàn thành suy luận trong $< 0.05\text{ ms/mẫu}$, hoàn toàn đáp ứng mục tiêu 20 CCU.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: GIỚI THIỆU & HẠN CHẾ -->
+      <section id="tab-about" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-circle-question"></i> Kiến Trúc Hệ Thống & Hướng Dẫn Sử Dụng</h3>
+          </div>
+          <div class="card-body about-body">
+            <h4>1. Nguồn Gốc & Đặc Điểm Dữ Liệu</h4>
+            <p>Hệ thống sử dụng bộ dữ liệu chuỗi thời gian được thiết kế theo quy chuẩn quan trắc môi trường đô thị Hà Nội gồm 8 trạm với đầy đủ 6 thông số ô nhiễm ($PM_{2.5}, PM_{10}, CO, NO_2, O_3, SO_2$) và 3 thông số khí tượng (nhiệt độ, độ ẩm, tốc độ gió). Toàn bộ dữ liệu được chia theo thứ tự thời gian (Chronological: 70% Train, 15% Val, 15% Test) loại bỏ hoàn toàn rò rỉ thông tin tương lai.</p>
+
+            <h4>2. Xử Lý Địa Không Gian Với GeoPandas</h4>
+            <p>Hệ thống nạp các ranh giới quận (Districts GeoJSON) và trạm đo (Stations GeoJSON) vào GeoPandas. Kiểm tra hệ tọa độ CRS EPSG:4326 (WGS84), chuyển đổi sang hệ tọa độ phẳng UTM Zone 48N (EPSG:32648) để tính toán diện tích quận chính xác theo $km^2$ và khoảng cách Euclid chính xác từ từng trạm về trung tâm Hoàn Kiếm.</p>
+
+            <h4>3. Kiến Trúc Backend Tối Ưu 20 Người Dùng Đồng Thời (20 CCU)</h4>
+            <p>FastAPI áp dụng cơ chế nạp Singleton tại sự kiện Lifespan: toàn bộ trọng số mô hình ML/DL, scaler và GeoDataFrame được nạp sẵn vào RAM khi server khởi động. Khi có yêu cầu dự báo, backend chỉ mất vài mili-giây để vector hóa và suy luận, không đọc đĩa I/O lặp lại, đáp ứng mượt mà tải 20 CCU trên máy cá nhân.</p>
+
+            <h4>4. Giới Hạn & Tuyên Bố Miễn Trừ</h4>
+            <div class="alert alert-warning">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <strong>Tuyên bố quan trọng:</strong> Hệ thống được xây dựng phục vụ mục đích học tập, nghiên cứu và tham khảo ứng dụng Trí tuệ Nhân tạo trong phân tích dữ liệu môi trường. Kết quả dự báo không phải là số liệu đo đạc quy chuẩn pháp lý và không thay thế cho các trạm quan trắc chuẩn quốc gia của Tổng cục Môi trường / Bộ Tài nguyên và Môi trường.
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" data-tab="tab-overview">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Tổng quan</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-map">
+      <i class="fa-solid fa-map-location-dot"></i>
+      <span>Bản đồ</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-forecast">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>Dự báo AI</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-results">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Kết quả</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-evaluation">
+      <i class="fa-solid fa-scale-balanced"></i>
+      <span>Đánh giá</span>
+    </button>
+    <button class="mobile-nav-btn" data-tab="tab-about">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Hệ thống</span>
+    </button>
+  </nav>
+
+  <!-- Modal Quét Mã QR Mở Trên Điện Thoại -->
+  <div id="mobile-qr-modal" class="modal-backdrop" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-mobile-screen-button"></i> Mở Ứng Dụng Trên Điện Thoại</h3>
+        <button class="modal-close" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body text-center">
+        <p style="margin-bottom:12px; font-size:0.95rem; color:#334155;">
+          Điện thoại và máy tính cần kết nối <b>cùng mạng Wi-Fi</b>.<br>
+          Dùng camera điện thoại quét mã QR bên dưới để mở ngay:
+        </p>
+        <div style="display:flex; justify-content:center; margin:16px 0;">
+          <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=http://192.168.1.18:8000" alt="Mã QR AirSense AI" width="220" height="220" style="border-radius:12px; border:2px solid #e2e8f0; padding:10px; background:#fff; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
+        </div>
+        <div style="background:#f1f5f9; padding:10px 14px; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:#1e293b; user-select:all; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <span>http://192.168.1.18:8000</span>
+        </div>
+        <div style="margin-top:16px; font-size:0.85rem; color:#64748b; text-align:left; line-height:1.6; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
+          <strong style="color:#0f172a;"><i class="fa-solid fa-download"></i> Cài đặt như App điện thoại (PWA):</strong><br>
+          • <b>Android (Chrome)</b>: Nhấn menu <b>⋮</b> góc phải trên ➔ Chọn <i>"Thêm vào màn hình chính"</i> hoặc <i>"Cài đặt ứng dụng"</i>.<br>
+          • <b>iPhone / iPad (Safari)</b>: Nhấn nút <b>Chia sẻ</b> (<i class="fa-solid fa-arrow-up-from-bracket"></i>) ➔ Chọn <i>"Thêm vào MH chính" (Add to Home Screen)</i>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CDN Scripts: Leaflet & Chart.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <!-- Project Scripts -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
