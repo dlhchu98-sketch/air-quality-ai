@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print(" Đang khởi động AirSense AI - Dự báo Chất lượng Không khí...")
     print(" Giao diện Web máy tính: http://127.0.0.1:8000")
-    print(" Truy cập bằng điện thoại (cùng Wi-Fi): http://192.168.1.18:8000")
+    print(" Truy cập bằng điện thoại (khác Wi-Fi / 4G / Toàn cầu): https://unrivaled-halva-a19195.netlify.app")
     print(" Tài liệu API: http://127.0.0.1:8000/docs")
     print("=" * 60)
     uvicorn.run("backend.app:app", host="0.0.0.0", port=8000, reload=True)
