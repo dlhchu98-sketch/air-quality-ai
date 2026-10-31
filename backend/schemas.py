@@ -45,10 +45,10 @@ class LatestObservation(BaseModel):
     color: str
 
 class ForecastRequest(BaseModel):
-    station_id: str = Field("VN_HN_01", description="Mã trạm quan trắc (ví dụ: VN_HN_01)")
+    station_id: str = Field("VN_HN", description="Mã trạm quan trắc (ví dụ: VN_HN, VN_DN, VN_HCM)")
     pollutant: str = Field("pm25", description="Chỉ số dự báo (mặc định: pm25)")
-    model_name: Literal["Baseline", "Random_Forest", "Neural_Network"] = Field("Random_Forest", description="Mô hình AI sử dụng")
-    horizon_hours: int = Field(12, ge=1, le=24, description="Số giờ cần dự báo (1 đến 24 giờ)")
+    model_name: str = Field("Random_Forest", description="Mô hình AI sử dụng (Baseline, Random_Forest, Neural_Network, Random_Forest_Quantized, Neural_Network_Quantized)")
+    horizon_hours: int = Field(48, ge=1, le=48, description="Số giờ cần dự báo (1 đến 48 giờ)")
 
 class ForecastStepResult(BaseModel):
     step_ahead: int

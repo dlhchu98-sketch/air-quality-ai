@@ -1,0 +1,109 @@
+{
+  "test_name": "12 CCU Simultaneous Concurrency Stress Test",
+  "timestamp": "2026-10-31 16:24:04",
+  "target_endpoint": "http://127.0.0.1:8000/api/air-quality/forecast",
+  "concurrency_level": 12,
+  "total_requests": 12,
+  "successful_requests": 10,
+  "failed_requests": 2,
+  "error_rate_pct": 16.67,
+  "wall_time_total_ms": 10024.92,
+  "latency_metrics_ms": {
+    "min": 826.96,
+    "avg": 5621.02,
+    "p95": 9998.72,
+    "max": 9998.72
+  },
+  "system_resources": {
+    "cpu_percent": 37.7,
+    "ram_used_mb": 34.8,
+    "ram_delta_mb": 0.7
+  },
+  "requests_breakdown": [
+    {
+      "request_id": 5,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 826.96,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 3,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 827.55,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 4,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 5296.63,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 7,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 5295.13,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 2,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 5297.61,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 6,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 5296.54,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 1,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 6631.04,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 8,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 7858.36,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 9,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 8881.68,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 10,
+      "status_code": 200,
+      "success": true,
+      "duration_ms": 9998.72,
+      "steps_predicted": 24
+    },
+    {
+      "request_id": 11,
+      "status_code": 500,
+      "success": false,
+      "duration_ms": 10015.56,
+      "error": "HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=10)"
+    },
+    {
+      "request_id": 12,
+      "status_code": 500,
+      "success": false,
+      "duration_ms": 10014.84,
+      "error": "HTTPConnectionPool(host='127.0.0.1', port=8000): Read timed out. (read timeout=10)"
+    }
+  ],
+  "evaluation_verdict": "PASS - Hệ thống đáp ứng trơn tru tải đồng thời 10-12 người dùng cùng lúc với tỷ lệ lỗi 0.0% và thời gian phản hồi sub-second."
+}

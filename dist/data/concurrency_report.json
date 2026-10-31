@@ -1,0 +1,133 @@
+{
+  "test_name": "Kiểm thử tải đồng thời phục vụ người dùng (10-12 CCU Concurrency Test)",
+  "timestamp": "2026-10-31 16:38:54",
+  "concurrency_level": 12,
+  "target_endpoint": "POST /api/air-quality/forecast",
+  "total_requests": 12,
+  "successful_requests": 12,
+  "failed_requests": 0,
+  "error_rate_pct": 0.0,
+  "response_time_ms": {
+    "mean": 7993.55,
+    "min": 7793.53,
+    "max": 8110.04,
+    "p50": 8036.77,
+    "p95": 8104.81,
+    "total_wall_clock_time": 8115.25
+  },
+  "system_resources": {
+    "cpu_percent": 32.0,
+    "ram_used_mb": 10806.9,
+    "ram_footprint_mb": 105.4
+  },
+  "individual_results": [
+    {
+      "task_id": 1,
+      "station": "VN_HN",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8110.04,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 2,
+      "station": "VN_HP",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 7871.97,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 3,
+      "station": "VN_DN",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 7793.53,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 4,
+      "station": "VN_HUE",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8058.81,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 5,
+      "station": "VN_HCM",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8014.74,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 6,
+      "station": "VN_CT",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 7883.21,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 7,
+      "station": "VN_QN",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8100.54,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 8,
+      "station": "VN_LD",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8083.97,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 9,
+      "station": "VN_KH",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 7827.99,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 10,
+      "station": "VN_GL",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8090.25,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 11,
+      "station": "VN_DB",
+      "model": "Random_Forest",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 8089.08,
+      "steps_predicted": 24
+    },
+    {
+      "task_id": 12,
+      "station": "VN_CB",
+      "model": "Random_Forest_Quantized",
+      "status_code": 200,
+      "success": true,
+      "latency_ms": 7998.5,
+      "steps_predicted": 24
+    }
+  ]
+}

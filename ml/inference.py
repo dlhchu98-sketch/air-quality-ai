@@ -89,11 +89,18 @@ class ForecastEngine:
         self.rf = joblib.load(models_dir / "random_forest.joblib")
         self.neural = joblib.load(models_dir / "neural_forecast.joblib")
         
+        # Nạp mô hình tối ưu hóa Int8 / Quantized nếu có
+        rf_opt_path = models_dir / "random_forest_quantized.joblib"
+        self.rf_quantized = joblib.load(rf_opt_path) if rf_opt_path.exists() else self.rf
+        
+        nn_opt_path = models_dir / "neural_quantized.joblib"
+        self.neural_quantized = joblib.load(nn_opt_path) if nn_opt_path.exists() else self.neural
+        
     def forecast_multistep(
         self,
         recent_history: pd.DataFrame,
         model_name: str = "Random_Forest",
-        horizon_hours: int = 12
+        horizon_hours: int = 48
     ) -> list[dict]:
         """
         Dự báo hồi quy đa bước (Multi-step autoregressive forecasting) cho các giờ tiếp theo.
@@ -101,7 +108,7 @@ class ForecastEngine:
         để cập nhật lại vector đặc trưng trễ (lags).
         """
         model_name_lower = model_name.lower()
-        horizon_hours = min(max(horizon_hours, 1), 24)
+        horizon_hours = min(max(horizon_hours, 1), 48)
 
         # Lấy bản ghi cuối cùng của lịch sử làm trạng thái gốc t_0
         last_row = recent_history.iloc[-1].copy()
@@ -184,9 +191,15 @@ class ForecastEngine:
                 pred_val = float(pm25_lag_1)
             elif "neural" in model_name_lower or "mlp" in model_name_lower:
                 scaled_x = self.scaler.transform(feat_df)
-                pred_val = float(self.neural.predict(scaled_x)[0])
+                if "quant" in model_name_lower or "opt" in model_name_lower:
+                    pred_val = float(self.neural_quantized.predict(scaled_x)[0])
+                else:
+                    pred_val = float(self.neural.predict(scaled_x)[0])
             else: # Random Forest mặc định
-                pred_val = float(self.rf.predict(feat_df)[0])
+                if "quant" in model_name_lower or "opt" in model_name_lower:
+                    pred_val = float(self.rf_quantized.predict(feat_df)[0])
+                else:
+                    pred_val = float(self.rf.predict(feat_df)[0])
 
             # Giới hạn vật lý không âm
             pred_val = max(5.0, round(pred_val, 2))
