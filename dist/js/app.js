@@ -19,6 +19,8 @@ const App = {
     this.setupNavigation();
     this.setupClock();
     this.setupMobileModal();
+    this.setupClickableModals();
+    this.setupLocationSearch();
     this.setupPWA();
     this.fetchOverviewData();
     this.setupForecastForm();
@@ -126,6 +128,178 @@ const App = {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.style.display = 'none';
       });
+    }
+  },
+
+
+  // Thiết lập 3 Ô thống kê có thể bấm xem chi tiết chuyên sâu (Yêu cầu người dùng)
+  setupClickableModals() {
+    const cardPM25 = document.getElementById('card-pm25-click');
+    const cardMeteo = document.getElementById('card-meteo-click');
+    const cardGeo = document.getElementById('card-geo-click');
+
+    const modalPM25 = document.getElementById('modal-pm25-detail');
+    const modalMeteo = document.getElementById('modal-meteo-detail');
+    const modalGeo = document.getElementById('modal-geo-detail');
+
+    const openModal = (m) => {
+      if (m) {
+        m.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    const closeModal = (m) => {
+      if (m) {
+        m.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    };
+
+    if (cardPM25) cardPM25.addEventListener('click', () => openModal(modalPM25));
+    if (cardMeteo) cardMeteo.addEventListener('click', () => openModal(modalMeteo));
+    if (cardGeo) cardGeo.addEventListener('click', () => openModal(modalGeo));
+
+    // Nút đóng (X) trên tất cả các modal
+    document.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.getAttribute('data-modal');
+        if (modalId) {
+          closeModal(document.getElementById(modalId));
+        } else {
+          const parentModal = btn.closest('.modal-backdrop');
+          if (parentModal) closeModal(parentModal);
+        }
+      });
+    });
+
+    // Đóng khi click vào backdrop mờ bên ngoài
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          closeModal(backdrop);
+        }
+      });
+    });
+
+    // Đóng bằng phím ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.show').forEach(m => closeModal(m));
+      }
+    });
+  },
+
+  // Thiết lập thanh tìm kiếm địa điểm & các nút chọn nhanh quận (Yêu cầu 3)
+  setupLocationSearch() {
+    const inputSearch = document.getElementById('input-location-search');
+    const dropdown = document.getElementById('search-results-dropdown');
+    const pills = document.querySelectorAll('.district-pill');
+
+    if (inputSearch && dropdown) {
+      inputSearch.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+          dropdown.style.display = 'none';
+          dropdown.innerHTML = '';
+          return;
+        }
+
+        const matches = this.stations.filter(s => 
+          (s.station_name && s.station_name.toLowerCase().includes(query)) ||
+          (s.district && s.district.toLowerCase().includes(query)) ||
+          (s.station_id && s.station_id.toLowerCase().includes(query))
+        );
+
+        if (!matches.length) {
+          dropdown.innerHTML = '<div style="padding:12px; color:#64748b; font-size:0.85rem; text-align:center;">Không tìm thấy trạm hoặc quận phù hợp</div>';
+          dropdown.style.display = 'block';
+          return;
+        }
+
+        dropdown.innerHTML = matches.map(s => `
+          <div class="search-result-item" data-station-id="${s.station_id}">
+            <div>
+              <div class="item-title">${s.station_name}</div>
+              <div class="item-sub">${s.district} • Cách tâm ${s.dist_center_km !== undefined ? s.dist_center_km : 0} km</div>
+            </div>
+            <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700;">${s.station_id}</span>
+          </div>
+        `).join('');
+        dropdown.style.display = 'block';
+
+        dropdown.querySelectorAll('.search-result-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const stId = item.getAttribute('data-station-id');
+            this.selectStationAndFocus(stId);
+            dropdown.style.display = 'none';
+            inputSearch.value = item.querySelector('.item-title').innerText;
+          });
+        });
+      });
+
+      // Ẩn dropdown khi click ngoài
+      document.addEventListener('click', (e) => {
+        if (!inputSearch.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.style.display = 'none';
+        }
+      });
+    }
+
+    // Các nút chọn nhanh quận
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        const district = pill.getAttribute('data-district');
+        this.filterByDistrict(district);
+      });
+    });
+  },
+
+  selectStationAndFocus(stationId) {
+    const station = this.stations.find(s => s.station_id === stationId);
+    if (!station) return;
+
+    // Cập nhật select form
+    const select = document.getElementById('select-station');
+    if (select) select.value = stationId;
+
+    // Highlight dòng trong bảng
+    const rows = document.querySelectorAll('#overview-stations-tbody tr');
+    rows.forEach(r => {
+      if (r.innerText.includes(stationId)) {
+        r.style.background = '#e0f2fe';
+        r.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        r.style.background = '';
+      }
+    });
+
+    // Nếu đang ở tab map, pan bản đồ
+    if (this.map && station.latitude && station.longitude) {
+      this.map.setView([station.latitude, station.longitude], 14, { animate: true });
+    }
+  },
+
+  filterByDistrict(district) {
+    const rows = document.querySelectorAll('#overview-stations-tbody tr');
+    rows.forEach(r => {
+      if (district === 'all' || r.innerText.includes(district)) {
+        r.style.display = '';
+      } else {
+        r.style.display = 'none';
+      }
+    });
+
+    if (district !== 'all') {
+      const match = this.stations.find(s => s.district === district);
+      if (match && this.map) {
+        this.map.setView([match.latitude, match.longitude], 13, { animate: true });
+      }
+    } else if (this.map) {
+      this.map.setView([21.0285, 105.8342], 12, { animate: true });
     }
   },
 
