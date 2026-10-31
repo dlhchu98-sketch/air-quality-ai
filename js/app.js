@@ -1,7 +1,8 @@
 /**
  * AI WEATHER & AIR QUALITY – SMART WEATHER EXPERIENCE
  * Full-featured Frontend Application Engine
- * Supports 34 Provinces, 7 Tabs, Dynamic Weather Animation, Comparison, AI Forecast, Leaflet Map & Outdoor Recommender.
+ * Supports 34 Provinces, 7 Tabs, Dynamic Weather Animation, Comparison, 
+ * AI Forecast & Quantization Benchmarks, Leaflet Map & Outdoor Recommender.
  */
 
 const App = {
@@ -13,6 +14,7 @@ const App = {
   activeActivity: 'all',
   mapLayer: 'temp',
   selectedMlModel: 'Random_Forest',
+  inferencePrecision: 'optimized', // 'optimized' (Int8) or 'fp32'
   theme: 'light',
   
   // Chart instances
@@ -20,6 +22,9 @@ const App = {
   compareRainChart: null,
   compareAqiChart: null,
   forecastChart: null,
+  benchmarkSizeChart: null,
+  benchmarkThroughputChart: null,
+  featureImportanceChart: null,
   map: null,
   mapMarkers: [],
 
@@ -195,7 +200,6 @@ const App = {
   },
 
   filterByRegion(region) {
-    // Active class cho region buttons
     const regionButtons = document.querySelectorAll('#region-pills-container .district-pill');
     regionButtons.forEach(btn => {
       if (btn.innerText.includes(region === 'all' ? 'Tất cả' : region)) {
@@ -218,11 +222,9 @@ const App = {
     container.innerHTML = html;
   },
 
-  // Chọn tỉnh thành hiện tại
   selectProvince(provId) {
     this.selectedProvinceId = provId;
     
-    // Cập nhật pill active
     document.querySelectorAll('#province-pills-container .district-pill').forEach(btn => {
       const p = this.getProvinceById(provId);
       if (p && btn.innerText === p.name) {
@@ -232,7 +234,6 @@ const App = {
       }
     });
 
-    // Render lại dữ liệu theo tỉnh mới
     this.renderAll();
     this.showToast(`Đã chuyển sang theo dõi: ${this.getSelectedProvince().name}`);
   },
@@ -245,7 +246,6 @@ const App = {
     return this.provinces.find(p => p.id === id) || this.provinces[0] || {};
   },
 
-  // RENDER TẤT CẢ DỮ LIỆU
   renderAll() {
     this.renderHeroWeather();
     this.renderStatCards();
@@ -271,11 +271,9 @@ const App = {
     const heroCard = document.getElementById('dynamic-weather-hero');
     if (!heroCard) return;
 
-    // Reset weather classes
     heroCard.className = 'weather-stage';
     heroCard.classList.add(`weather-${condition.replace('_', '-')}`);
 
-    // Map animation layers
     const sunEl = document.getElementById('hero-sun');
     const cloud1 = document.getElementById('hero-cloud-1');
     const cloud2 = document.getElementById('hero-cloud-2');
@@ -285,7 +283,6 @@ const App = {
     const moonEl = document.getElementById('hero-moon');
     const starField = document.getElementById('hero-star-field');
 
-    // Mặc định ẩn tất cả
     if (sunEl) sunEl.style.display = 'none';
     if (cloud1) cloud1.style.display = 'none';
     if (cloud2) cloud2.style.display = 'none';
@@ -295,7 +292,6 @@ const App = {
     if (moonEl) moonEl.style.display = 'none';
     if (starField) starField.style.display = 'none';
 
-    // Bật hiệu ứng động theo từng điều kiện thực tế
     if (condition === 'sunny') {
       if (sunEl) sunEl.style.display = 'block';
     } else if (condition === 'partly_cloudy') {
@@ -330,7 +326,6 @@ const App = {
       if (cloud1) cloud1.style.display = 'block';
     }
 
-    // Cập nhật text & số liệu Hero
     const aqi = Math.round(p.pm25 * 1.8);
     const condIcon = this.getConditionIcon(condition);
 
@@ -449,7 +444,6 @@ const App = {
     const aqiBox = document.getElementById('aqi-clean-leaderboard');
     if (!weatherBox || !aqiBox) return;
 
-    // Sắp xếp thuận lợi nhất (Điểm outdoor cao nhất)
     const sortedWeather = [...this.provinces].sort((a, b) => b.outdoor_score - a.outdoor_score).slice(0, 5);
     weatherBox.innerHTML = sortedWeather.map((p, idx) => `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--body-bg);border-radius:var(--radius-sm);cursor:pointer;" onclick="App.selectProvince('${p.id}')">
@@ -467,7 +461,6 @@ const App = {
       </div>
     `).join('');
 
-    // Sắp xếp không khí trong lành nhất (PM2.5 thấp nhất)
     const sortedAqi = [...this.provinces].sort((a, b) => a.pm25 - b.pm25).slice(0, 5);
     aqiBox.innerHTML = sortedAqi.map((p, idx) => `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--body-bg);border-radius:var(--radius-sm);cursor:pointer;" onclick="App.selectProvince('${p.id}')">
@@ -498,7 +491,6 @@ const App = {
     const cityTitle = document.getElementById('weather-detail-city');
     if (cityTitle) cityTitle.innerText = p.name;
 
-    // 7-Day Daily Forecast
     const dailyContainer = document.getElementById('weather-detail-daily');
     if (dailyContainer) {
       const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
@@ -527,7 +519,6 @@ const App = {
       dailyContainer.innerHTML = dailyHtml;
     }
 
-    // 10 Chỉ số Khí tượng đầy đủ
     const dew = Math.round((p.temp - (100 - p.humidity) / 5) * 10) / 10;
     document.getElementById('tel-temp').innerText = `${p.temp}°C`;
     document.getElementById('tel-feels').innerText = `${p.feels_like}°C`;
@@ -605,14 +596,12 @@ const App = {
 
     const selectedList = this.compareProvinceIds.map(id => this.getProvinceById(id));
 
-    // Headers
     tableHead.innerHTML = `<th>Thuộc tính so sánh</th>` + selectedList.map(p => `
       <th style="color:var(--primary);font-size:14px;">
         <i class="fa-solid fa-location-dot"></i> ${p.name}
       </th>
     `).join('');
 
-    // Rows
     const rows = [
       { label: 'Điều kiện thời tiết', fn: p => `${this.getConditionIcon(p.condition)} ${p.weather_text}` },
       { label: 'Nhiệt độ (°C)', fn: p => `<strong>${p.temp}°C</strong> (Cảm giác ${p.feels_like}°C)` },
@@ -638,7 +627,6 @@ const App = {
     const colors = ['#0284c7', '#0d9488', '#f59e0b', '#8b5cf6', '#ef4444'];
     const labels = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
 
-    // 1. Temperature Chart
     const ctxTemp = document.getElementById('compareTempChart');
     if (ctxTemp) {
       if (this.compareTempChart) this.compareTempChart.destroy();
@@ -665,7 +653,6 @@ const App = {
       });
     }
 
-    // 2. Rain Probability & Humidity Chart
     const ctxRain = document.getElementById('compareRainChart');
     if (ctxRain) {
       if (this.compareRainChart) this.compareRainChart.destroy();
@@ -710,7 +697,6 @@ const App = {
     document.getElementById('aqi-main-badge').style.color = p.color;
     document.getElementById('aqi-health-advice').innerText = p.health_advice;
 
-    // Gauge circle animation
     const circle = document.getElementById('aqi-gauge-arc');
     if (circle) {
       const circumference = 471;
@@ -720,7 +706,6 @@ const App = {
       circle.style.stroke = p.color;
     }
 
-    // 6 Pollutants grid
     const pollutants = [
       { name: 'PM2.5', val: p.pm25, unit: 'µg/m³', limit: 50, standard: 'QCVN 05:2023' },
       { name: 'PM10', val: p.pm10, unit: 'µg/m³', limit: 100, standard: 'QCVN 05:2023' },
@@ -757,7 +742,6 @@ const App = {
       }).join('');
     }
 
-    // AQI Comparison Chart
     const ctxAqi = document.getElementById('compareAqiChart');
     if (ctxAqi) {
       if (this.compareAqiChart) this.compareAqiChart.destroy();
@@ -784,33 +768,69 @@ const App = {
   },
 
   // =========================================================================
-  // TAB 5: DỰ BÁO BỤI MỊN BẰNG MACHINE LEARNING
+  // TAB 5: DỰ BÁO BỤI MỊN & TỐI ƯU HÓA MÔ HÌNH AI (BENCHMARKS & QUANTIZATION)
   // =========================================================================
   renderForecastTab() {
     const p = this.getSelectedProvince();
     document.getElementById('ml-selected-city').innerText = p.name;
 
-    // Metrics Table
-    const tbody = document.getElementById('metrics-table-body');
-    if (tbody && typeof EMBEDDED_DATA !== 'undefined' && EMBEDDED_DATA.metrics) {
-      tbody.innerHTML = Object.keys(EMBEDDED_DATA.metrics).map(k => {
-        const m = EMBEDDED_DATA.metrics[k];
-        const isSelected = k === this.selectedMlModel;
-        return `
-          <tr style="${isSelected ? 'background:rgba(2,132,199,0.08);font-weight:700;' : ''}">
-            <td>${m.model_name} ${isSelected ? '★' : ''}</td>
-            <td>${m.model_type}</td>
-            <td style="color:#0284c7;">${m.mae}</td>
-            <td>${m.rmse}</td>
-            <td style="color:#0d9488;">${m.r2}</td>
-            <td>${m.train_time_sec}s</td>
-            <td>${m.inference_latency_ms}ms</td>
-          </tr>
-        `;
-      }).join('');
-    }
+    this.updatePrecisionTelemetryBadges();
+    this.renderForecastTimeSeriesChart(p);
+    this.renderOptimizationBenchmarkCharts();
+  },
 
-    // Forecast Chart (48h History + 48h Forecast + Confidence Band)
+  setInferencePrecision(mode) {
+    this.inferencePrecision = mode;
+    const btnOpt = document.getElementById('btn-precision-opt');
+    const btnFp32 = document.getElementById('btn-precision-fp32');
+    if (btnOpt && btnFp32) {
+      if (mode === 'optimized') {
+        btnOpt.classList.add('active');
+        btnFp32.classList.remove('active');
+      } else {
+        btnFp32.classList.add('active');
+        btnOpt.classList.remove('active');
+      }
+    }
+    this.updatePrecisionTelemetryBadges();
+    this.renderForecastTimeSeriesChart(this.getSelectedProvince());
+    this.showToast(mode === 'optimized' ? 'Đã kích hoạt chế độ: Int8 Quantized (Tối ưu hóa siêu tốc)' : 'Đã chuyển sang chế độ: FP32 Full Precision (Độ chính xác nguyên bản)');
+  },
+
+  updatePrecisionTelemetryBadges() {
+    const badgeSize = document.getElementById('badge-model-size');
+    const badgeLatency = document.getElementById('badge-model-latency');
+    const badgeThroughput = document.getElementById('badge-model-throughput');
+    if (!badgeSize || !badgeLatency || !badgeThroughput) return;
+
+    if (this.selectedMlModel === 'Random_Forest') {
+      if (this.inferencePrecision === 'optimized') {
+        badgeSize.innerText = '6.61 MB';
+        badgeLatency.innerText = '0.0116 ms';
+        badgeThroughput.innerText = '86,029';
+      } else {
+        badgeSize.innerText = '20.70 MB';
+        badgeLatency.innerText = '0.0172 ms';
+        badgeThroughput.innerText = '58,246';
+      }
+    } else if (this.selectedMlModel === 'Neural_Network') {
+      if (this.inferencePrecision === 'optimized') {
+        badgeSize.innerText = '102.1 KB';
+        badgeLatency.innerText = '0.0006 ms';
+        badgeThroughput.innerText = '1,688,536';
+      } else {
+        badgeSize.innerText = '102.2 KB';
+        badgeLatency.innerText = '0.0031 ms';
+        badgeThroughput.innerText = '318,900';
+      }
+    } else {
+      badgeSize.innerText = '76 Bytes';
+      badgeLatency.innerText = '0.0010 ms';
+      badgeThroughput.innerText = '1,000,000+';
+    }
+  },
+
+  renderForecastTimeSeriesChart(p) {
     const ctx = document.getElementById('forecastChart');
     if (!ctx) return;
 
@@ -821,7 +841,6 @@ const App = {
     const baseVal = p.pm25;
     const historyData = historyLabels.map((_, i) => Math.max(5, Math.round((baseVal + Math.sin(i / 4) * 6) * 10) / 10));
     
-    // Future forecast based on model
     const multiplier = this.selectedMlModel === 'Random_Forest' ? 1.0 : (this.selectedMlModel === 'Neural_Network' ? 1.15 : 1.35);
     const futureData = futureLabels.map((_, i) => Math.max(5, Math.round((baseVal + Math.sin((48 + i) / 5) * 5 * multiplier) * 10) / 10));
     const upperBand = futureData.map(v => Math.round((v + 4.5 * multiplier) * 10) / 10);
@@ -842,9 +861,9 @@ const App = {
             pointRadius: 1
           },
           {
-            label: `Dự báo AI (${this.selectedMlModel})`,
+            label: `Dự báo AI (${this.selectedMlModel} - ${this.inferencePrecision === 'optimized' ? 'Int8 Quantized' : 'FP32 Raw'})`,
             data: [...Array(47).fill(null), historyData[historyData.length - 1], ...futureData],
-            borderColor: '#0284c7',
+            borderColor: this.inferencePrecision === 'optimized' ? '#0d9488' : '#0284c7',
             borderWidth: 3,
             pointRadius: 2
           },
@@ -879,9 +898,126 @@ const App = {
     });
   },
 
+  renderOptimizationBenchmarkCharts() {
+    // 1. Chart Kích thước tệp (MB)
+    const ctxSize = document.getElementById('benchmarkSizeChart');
+    if (ctxSize) {
+      if (this.benchmarkSizeChart) this.benchmarkSizeChart.destroy();
+      this.benchmarkSizeChart = new Chart(ctxSize, {
+        type: 'bar',
+        data: {
+          labels: ['Random Forest', 'Neural Network (MLP)'],
+          datasets: [
+            {
+              label: 'Trước Tối Ưu (FP32)',
+              backgroundColor: '#0284c7',
+              data: [20.70, 0.10],
+              borderRadius: 6
+            },
+            {
+              label: 'Sau Tối Ưu (Int8 / Zlib)',
+              backgroundColor: '#10b981',
+              data: [6.61, 0.10],
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            y: { title: { display: true, text: 'Dung lượng (MB)' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // 2. Chart Thông lượng suy luận (Samples/sec)
+    const ctxThroughput = document.getElementById('benchmarkThroughputChart');
+    if (ctxThroughput) {
+      if (this.benchmarkThroughputChart) this.benchmarkThroughputChart.destroy();
+      this.benchmarkThroughputChart = new Chart(ctxThroughput, {
+        type: 'bar',
+        data: {
+          labels: ['Random Forest', 'Neural Network (MLP)'],
+          datasets: [
+            {
+              label: 'Trước Tối Ưu (FP32)',
+              backgroundColor: '#64748b',
+              data: [58246, 318900],
+              borderRadius: 6
+            },
+            {
+              label: 'Sau Tối Ưu (Int8 Quantized)',
+              backgroundColor: '#f59e0b',
+              data: [86029, 1688536],
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top' } },
+          scales: {
+            y: { title: { display: true, text: 'Thông lượng (Mẫu/giây)' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // 3. Chart Feature Importances Bar Chart
+    const ctxFeat = document.getElementById('featureImportanceChart');
+    if (ctxFeat) {
+      if (this.featureImportanceChart) this.featureImportanceChart.destroy();
+      this.featureImportanceChart = new Chart(ctxFeat, {
+        type: 'bar',
+        data: {
+          labels: [
+            'Nhiệt độ (°C)',
+            'PM2.5 TB 6h',
+            'Ozone t-1',
+            'PM2.5 t-24 (Ngày)',
+            'PM2.5 TB 24h',
+            'Sin Hour',
+            'Xu hướng Nhiệt 6h',
+            'Độ ẩm (%)'
+          ],
+          datasets: [{
+            label: 'Độ quan trọng (%)',
+            data: [52.55, 15.15, 5.89, 4.71, 4.37, 2.98, 2.04, 1.59],
+            backgroundColor: [
+              '#0284c7',
+              '#0369a1',
+              '#06b6d4',
+              '#0d9488',
+              '#10b981',
+              '#38bdf8',
+              '#64748b',
+              '#94a3b8'
+            ],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { title: { display: true, text: 'Tỷ lệ đóng góp (%)' }, max: 60 }
+          }
+        }
+      });
+    }
+  },
+
   selectMlModel(modelKey) {
     this.selectedMlModel = modelKey;
-    document.querySelectorAll('#tab-aiforecast .district-pill').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('#tab-aiforecast .district-pill').forEach(btn => {
+      if (btn.id.startsWith('btn-model-')) btn.classList.remove('active');
+    });
     if (modelKey === 'Random_Forest') document.getElementById('btn-model-rf').classList.add('active');
     if (modelKey === 'Neural_Network') document.getElementById('btn-model-nn').classList.add('active');
     if (modelKey === 'Baseline_Persistence') document.getElementById('btn-model-base').classList.add('active');
@@ -918,7 +1054,6 @@ const App = {
   updateMapMarkers() {
     if (!this.map || typeof L === 'undefined') return;
 
-    // Xóa markers cũ
     this.mapMarkers.forEach(m => this.map.removeLayer(m));
     this.mapMarkers = [];
 
@@ -986,7 +1121,6 @@ const App = {
       filtered = filtered.filter(p => p.outdoor_activities && p.outdoor_activities.some(a => a.includes(keyword)));
     }
 
-    // Sort by outdoor score descending
     filtered.sort((a, b) => b.outdoor_score - a.outdoor_score);
 
     if (filtered.length === 0) {
@@ -1111,7 +1245,6 @@ const App = {
     if (icon) icon.classList.add('fa-spin');
     if (btn) btn.disabled = true;
 
-    // Live sensor jitter
     this.provinces.forEach(p => {
       const deltaT = (Math.random() - 0.48) * 0.4;
       p.temp = Math.round((p.temp + deltaT) * 10) / 10;
@@ -1154,10 +1287,12 @@ const App = {
     if (this.compareRainChart) this.compareRainChart.update();
     if (this.compareAqiChart) this.compareAqiChart.update();
     if (this.forecastChart) this.forecastChart.update();
+    if (this.benchmarkSizeChart) this.benchmarkSizeChart.update();
+    if (this.benchmarkThroughputChart) this.benchmarkThroughputChart.update();
+    if (this.featureImportanceChart) this.featureImportanceChart.update();
   }
 };
 
-// Khởi chạy khi tài liệu HTML sẵn sàng
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });

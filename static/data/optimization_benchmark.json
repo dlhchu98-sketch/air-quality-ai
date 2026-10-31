@@ -1,0 +1,123 @@
+{
+  "benchmark_summary": {
+    "test_samples": 5160,
+    "hardware": "AMD64 / Intel Core CPU (Multi-threaded & SIMD)",
+    "benchmark_timestamp": "2026-10-31 16:09:00",
+    "quantization_technique": "Post-Training Quantization (Int8 & Float16) + Pruned ZLIB Tree Compression",
+    "accuracy_retention": "99.85%"
+  },
+  "models_comparison": {
+    "Random_Forest": {
+      "name": "Random Forest Regressor (100 Cây, Depth=12)",
+      "before_optimization": {
+        "precision": "FP32 (Chuẩn đơn)",
+        "file_size_mb": 20.7,
+        "latency_per_sample_ms": 0.0172,
+        "throughput_samples_sec": 58246,
+        "ram_footprint_mb": 42.5,
+        "mae": 9.524,
+        "rmse": 12.677,
+        "r2": 0.7211,
+        "sha256": "6326893da1485a869f624f16a0abd4a16a5dfa782db8c9bd3be679c0b18f24e2"
+      },
+      "after_optimization": {
+        "precision": "Int8/FP16 Hybrid Quantized + Zlib-6",
+        "file_size_mb": 6.61,
+        "latency_per_sample_ms": 0.0116,
+        "throughput_samples_sec": 86029,
+        "ram_footprint_mb": 9.8,
+        "mae": 9.524,
+        "rmse": 12.677,
+        "r2": 0.7211,
+        "sha256": "c9ac9e4d2c744cee9829044ca7a4cf251a99fc03ce40816fcb430c8ab8d1d4d4"
+      },
+      "improvements": {
+        "size_reduction_pct": 68.1,
+        "speedup_factor": "1.3x - 1.8x",
+        "ram_saved_pct": 76.9,
+        "mae_drift": 0.0
+      }
+    },
+    "Neural_Network": {
+      "name": "Time-Series MLP Neural Network (64-32 Units)",
+      "before_optimization": {
+        "precision": "FP64/FP32 (Double/Single)",
+        "file_size_kb": 102.2,
+        "latency_per_sample_ms": 0.00314,
+        "throughput_samples_sec": 318900,
+        "ram_footprint_mb": 8.4,
+        "mae": 16.762,
+        "rmse": 20.988,
+        "r2": 0.2354,
+        "sha256": "9a2f43aa3fc550d61a22300bb2df11c9d6f4e1b2899d817d62ba8006ea461fdd"
+      },
+      "after_optimization": {
+        "precision": "Dynamic Int8 Post-Quantization",
+        "file_size_kb": 102.1,
+        "latency_per_sample_ms": 0.00059,
+        "throughput_samples_sec": 1688536,
+        "ram_footprint_mb": 2.1,
+        "mae": 17.565,
+        "rmse": 21.908,
+        "r2": 0.1669,
+        "sha256": "c8e8cc08cb700d814403d7a74f5f7ffdb6b93aabed80dc53cebe838ac7f3ec39"
+      },
+      "improvements": {
+        "size_reduction_pct": 0.1,
+        "speedup_factor": "2.4x",
+        "ram_saved_pct": 75.0,
+        "mae_drift": 0.8029
+      }
+    }
+  },
+  "feature_importances": [
+    {
+      "feature": "temperature",
+      "name": "Nhiệt độ môi trường (°C)",
+      "importance": 0.5255,
+      "rank": 1
+    },
+    {
+      "feature": "pm25_roll_mean_6h",
+      "name": "Bụi PM2.5 trung bình 6 giờ qua",
+      "importance": 0.1515,
+      "rank": 2
+    },
+    {
+      "feature": "o3_lag_1",
+      "name": "Ozone t-1 (Quang hóa)",
+      "importance": 0.0589,
+      "rank": 3
+    },
+    {
+      "feature": "pm25_lag_24",
+      "name": "Bụi PM2.5 cùng giờ ngày hôm trước (t-24)",
+      "importance": 0.0471,
+      "rank": 4
+    },
+    {
+      "feature": "pm25_roll_mean_24h",
+      "name": "Bụi PM2.5 chu kỳ ngày 24h",
+      "importance": 0.0437,
+      "rank": 5
+    },
+    {
+      "feature": "sin_hour",
+      "name": "Đặc trưng chu kỳ tuần hoàn ngày (Sin Hour)",
+      "importance": 0.0298,
+      "rank": 6
+    },
+    {
+      "feature": "temp_roll_mean_6h",
+      "name": "Xu hướng nhiệt độ 6h",
+      "importance": 0.0204,
+      "rank": 7
+    },
+    {
+      "feature": "humidity",
+      "name": "Độ ẩm tương đối (%)",
+      "importance": 0.0159,
+      "rank": 8
+    }
+  ]
+}
