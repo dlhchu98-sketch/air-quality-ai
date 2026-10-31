@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AirSense AI - Hệ Thống Dự Báo Chất Lượng Không Khí Đô Thị</title>
+  <title>AirSense AI - Hệ Thống Phân Tích & Dự Báo Chất Lượng Không Khí Toàn Quốc</title>
   <!-- Google Fonts & FontAwesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Leaflet CSS for GeoPandas Interactive Map -->
+  <!-- Leaflet CSS for Interactive Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- PWA & Mobile Meta Tags -->
@@ -33,7 +33,7 @@
         <div class="brand-icon"><i class="fa-solid fa-wind"></i></div>
         <div class="brand-text">
           <h2>AirSense AI</h2>
-          <span>GeoPandas & ML Forecast</span>
+          <span>National AQI & ML Forecast</span>
         </div>
       </div>
 
@@ -67,7 +67,7 @@
       <div class="sidebar-footer">
         <div class="system-status-badge">
           <span class="status-dot pulse"></span>
-          <span id="backend-status-text">Backend 20 CCU Ready</span>
+          <span id="backend-status-text">Hệ thống 20 CCU Ready</span>
         </div>
         <small class="disclaimer-mini">Mục đích học tập & nghiên cứu</small>
       </div>
@@ -75,67 +75,71 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Top Bar -->
+      <!-- Top Bar: Nút làm mới bấm mượt, KHÔNG còn nút QR -->
       <header class="topbar">
         <div class="page-title-box">
-          <h1 id="page-title">Tổng quan Chất lượng Không khí</h1>
-          <p id="page-subtitle">Giám sát chuỗi thời gian & dự báo đa bước tại 8 trạm đô thị Hà Nội</p>
+          <h1 id="page-title">Tổng quan Chất lượng Không khí Toàn Quốc</h1>
+          <p id="page-subtitle">Giám sát chuỗi thời gian & dự báo đa bước tại 23 trạm quan trắc trên 15 tỉnh thành</p>
         </div>
         <div class="topbar-actions">
           <div class="time-chip" id="current-clock">
             <i class="fa-regular fa-clock"></i> <span id="clock-val">Đang tải...</span>
           </div>
-          <button class="btn btn-outline" id="btn-refresh" title="Làm mới dữ liệu">
-            <i class="fa-solid fa-arrows-rotate"></i> Làm mới
-          </button>
-          <button class="btn btn-primary" id="btn-mobile-modal" title="Quét mã QR dùng trên điện thoại">
-            <i class="fa-solid fa-qrcode"></i> <span>Quét QR 24/7</span>
+          <button class="btn btn-outline" id="btn-refresh" onclick="App.refreshAllDataWithAnimation()" title="Làm mới dữ liệu quan trắc">
+            <i class="fa-solid fa-arrows-rotate"></i> <span>Làm mới</span>
           </button>
         </div>
       </header>
 
-      <!-- Location Search & Quick Filter Bar (Yêu cầu 3: Tối ưu lựa chọn địa điểm) -->
+      <!-- Location Search & Quick Filter Bar: Đầy đủ các tỉnh thành cả nước -->
       <section class="location-search-section">
         <div class="search-bar-row">
           <div class="search-input-wrapper">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="input-location-search" placeholder="Tìm kiếm nhanh tỉnh, thành phố, quận hoặc trạm quan trắc..." autocomplete="off">
+            <input type="text" id="input-location-search" placeholder="Tìm kiếm tỉnh, thành phố, quận hoặc trạm quan trắc (Hà Nội, TP.HCM, Đà Nẵng, Cần Thơ, Hải Phòng...)..." autocomplete="off">
             <div class="search-results-dropdown" id="search-results-dropdown"></div>
           </div>
           <div class="quick-city-badge">
-            <i class="fa-solid fa-location-dot" style="color:var(--primary);"></i>
-            <span>Khu vực giám sát: <strong>Hà Nội (8 Quận Đô Thị)</strong></span>
+            <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
+            <span>Mạng lưới: <strong>23 Trạm Quan Trắc / 15 Tỉnh Thành</strong></span>
           </div>
         </div>
         <div class="district-pills-row">
-          <span class="pills-label"><i class="fa-solid fa-bolt"></i> Chọn nhanh quận:</span>
-          <button class="district-pill active" data-district="all">Tất cả (Đô thị)</button>
-          <button class="district-pill" data-district="Hoàn Kiếm">Hoàn Kiếm</button>
-          <button class="district-pill" data-district="Cầu Giấy">Cầu Giấy</button>
-          <button class="district-pill" data-district="Hà Đông">Hà Đông</button>
-          <button class="district-pill" data-district="Ba Đình">Ba Đình</button>
-          <button class="district-pill" data-district="Tây Hồ">Tây Hồ</button>
-          <button class="district-pill" data-district="Long Biên">Long Biên</button>
-          <button class="district-pill" data-district="Hai Bà Trưng">Hai Bà Trưng</button>
-          <button class="district-pill" data-district="Đống Đa">Đống Đa</button>
+          <span class="pills-label"><i class="fa-solid fa-map-pin"></i> Khu vực / Tỉnh:</span>
+          <button class="district-pill active" data-location="all">Tất cả (Toàn Quốc)</button>
+          <button class="district-pill" data-location="Hà Nội">Hà Nội (8 trạm)</button>
+          <button class="district-pill" data-location="TP. Hồ Chí Minh">TP. Hồ Chí Minh (3 trạm)</button>
+          <button class="district-pill" data-location="Đà Nẵng">Đà Nẵng (2 trạm)</button>
+          <button class="district-pill" data-location="Hải Phòng">Hải Phòng</button>
+          <button class="district-pill" data-location="Cần Thơ">Cần Thơ</button>
+          <button class="district-pill" data-location="Quảng Ninh">Quảng Ninh</button>
+          <button class="district-pill" data-location="Khánh Hòa">Khánh Hòa (Nha Trang)</button>
+          <button class="district-pill" data-location="Bình Dương">Bình Dương</button>
+          <button class="district-pill" data-location="Thừa Thiên Huế">Huế</button>
+          <button class="district-pill" data-location="Lâm Đồng">Đà Lạt (Lâm Đồng)</button>
+          <button class="district-pill" data-location="Bà Rịa - Vũng Tàu">Vũng Tàu</button>
+          <button class="district-pill" data-location="Bắc Ninh">Bắc Ninh</button>
+          <button class="district-pill" data-location="Nghệ An">Nghệ An (Vinh)</button>
+          <button class="district-pill" data-location="Thái Nguyên">Thái Nguyên</button>
+          <button class="district-pill" data-location="Đồng Nai">Đồng Nai</button>
         </div>
       </section>
 
       <!-- TAB 1: TỔNG QUAN -->
       <section id="tab-overview" class="tab-pane active">
-        <!-- 4 Stat Cards: Có 3 ô bấm vào hiện modal chi tiết chuyên sâu theo đúng yêu cầu -->
+        <!-- 4 Stat Cards: 3 ô bấm vào hiện modal chi tiết chuyên sâu -->
         <div class="stat-grid">
-          <!-- Ô 1: AQI -->
+          <!-- Ô 1: AQI Trung Bình -->
           <div class="stat-card primary">
             <div class="stat-header">
-              <span>AQI Trung Bình Đô Thị</span>
+              <span>AQI Trung Bình Toàn Quốc</span>
               <i class="fa-solid fa-smog"></i>
             </div>
             <div class="stat-body">
               <h2 id="overview-aqi-val">--</h2>
               <span class="badge" id="overview-aqi-badge">Đang tính...</span>
             </div>
-            <div class="stat-footer" id="overview-aqi-desc">Chỉ số bụi mịn PM2.5 trung bình 8 quận</div>
+            <div class="stat-footer" id="overview-aqi-desc">Chỉ số bụi mịn PM2.5 trung bình 23 trạm quan trắc</div>
           </div>
 
           <!-- Ô 2: Bụi Mịn PM2.5 (CLICKABLE MODAL 1) -->
@@ -171,17 +175,17 @@
           </div>
 
           <!-- Ô 4: Hạ Tầng GeoPandas (CLICKABLE MODAL 3) -->
-          <div class="stat-card success clickable" id="card-geo-click" title="Nhấp chuột để xem kiến trúc địa không gian GeoPandas, CRS WGS84/UTM và mạng lưới 8 trạm">
+          <div class="stat-card success clickable" id="card-geo-click" title="Nhấp chuột để xem kiến trúc địa không gian GeoPandas, CRS WGS84/UTM và mạng lưới trạm">
             <div class="stat-header">
-              <span>Hạ Tầng GeoPandas</span>
+              <span>Mạng Lưới Quan Trắc</span>
               <i class="fa-solid fa-satellite"></i>
             </div>
             <div class="stat-body">
-              <h2>8 / 8</h2>
-              <span class="badge badge-success">Online</span>
+              <h2>23 / 23</h2>
+              <span class="badge badge-success">Online (15 Tỉnh)</span>
             </div>
             <div class="stat-footer">
-              <span>CRS EPSG:4326 & UTM 48N</span>
+              <span>Hạ tầng GeoPandas GIS</span>
               <span class="card-click-hint"><span>Bấm xem chi tiết</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
             </div>
           </div>
@@ -196,10 +200,10 @@
           </div>
         </div>
 
-        <!-- Stations Table Summary -->
+        <!-- Stations Table Summary: 23 trạm trên toàn quốc -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-tower-observation"></i> Trạng Thái Quan Trắc Tại 8 Trạm Không Gian Hà Nội</h3>
+            <h3><i class="fa-solid fa-tower-observation"></i> Trạng Thái Quan Trắc 23 Trạm Trên 15 Tỉnh Thành Việt Nam</h3>
             <span class="card-tag">Dữ liệu quan trắc thời gian thực</span>
           </div>
           <div class="card-body">
@@ -209,8 +213,8 @@
                   <tr>
                     <th>Mã Trạm</th>
                     <th>Tên Trạm Quan Trắc</th>
-                    <th>Quận</th>
-                    <th>Khoảng Cách Về Tâm</th>
+                    <th>Tỉnh / Thành Phố</th>
+                    <th>Khu Vực</th>
                     <th>PM2.5 (µg/m³)</th>
                     <th>PM10 (µg/m³)</th>
                     <th>NO2 (µg/m³)</th>
@@ -233,10 +237,10 @@
           <div class="filter-group">
             <label><i class="fa-solid fa-layer-group"></i> Hiển thị lớp địa không gian:</label>
             <label class="checkbox-label">
-              <input type="checkbox" id="layer-districts-check" checked> Ranh giới đa giác quận (GeoPandas)
+              <input type="checkbox" id="layer-districts-check" checked> Điểm trạm quan trắc toàn quốc (23 trạm)
             </label>
             <label class="checkbox-label">
-              <input type="checkbox" id="layer-stations-check" checked> Điểm trạm quan trắc (8 trạm)
+              <input type="checkbox" id="layer-stations-check" checked> Bán kính ảnh hưởng vi khí hậu (Buffer 5km)
             </label>
           </div>
           <div class="legend-bar">
@@ -244,12 +248,12 @@
             <span class="legend-item"><span class="color-dot" style="background:#f59e0b;"></span> Trung bình (12-35.4)</span>
             <span class="legend-item"><span class="color-dot" style="background:#f97316;"></span> Kém (35.4-55.4)</span>
             <span class="legend-item"><span class="color-dot" style="background:#ef4444;"></span> Xấu (55.4-150)</span>
-            <span class="legend-item"><span class="color-dot" style="background:#8b5cf6;"></span> Rất xấu / Nguy hại (>150)</span>
+            <span class="legend-item"><span class="color-dot" style="background:#8b5cf6;"></span> Rất xấu / Nguy hại (&gt;150)</span>
           </div>
         </div>
 
         <div class="card map-card">
-          <div id="leaflet-map" style="height: 580px; border-radius: var(--radius-md);"></div>
+          <div id="leaflet-map" style="height: 600px; border-radius: var(--radius-md);"></div>
         </div>
       </section>
 
@@ -263,7 +267,7 @@
             <div class="card-body">
               <form id="form-run-forecast">
                 <div class="form-group">
-                  <label for="select-station"><i class="fa-solid fa-location-dot"></i> Chọn trạm quan trắc:</label>
+                  <label for="select-station"><i class="fa-solid fa-location-dot"></i> Chọn trạm quan trắc (Toàn quốc):</label>
                   <select id="select-station" class="form-control" required></select>
                 </div>
 
@@ -307,7 +311,7 @@
             <div class="card-body">
               <div class="features-info-grid">
                 <div class="info-card">
-                  <h4><i class="fa-solid fa-bolt-lightning text-cyan"></i> Độ Trễ Thấp (< 3ms)</h4>
+                  <h4><i class="fa-solid fa-bolt-lightning text-cyan"></i> Độ Trễ Thấp (&lt; 3ms)</h4>
                   <p>Mô hình Random Forest và mạng nơ-ron được nạp Singleton tại RAM. Không đọc lại file disk, tối ưu tốc độ phản hồi cực nhanh.</p>
                 </div>
                 <div class="info-card">
@@ -315,7 +319,7 @@
                   <p>Backend FastAPI bất đồng bộ xử lý mượt mà hơn 20 người dùng truy cập và tính toán dự báo cùng thời điểm.</p>
                 </div>
                 <div class="info-card">
-                  <h4><i class="fa-solid fa-chart-line text-cyan"></i> Khoảng Tin Cậy ±σ</h4>
+                  <h4><i class="fa-solid fa-chart-line text-cyan"></i> Khoảng Tin Cậy &plusmn;&sigma;</h4>
                   <p>Kết quả dự báo đi kèm dải cận trên / cận dưới thể hiện độ không chắc chắn khoa học của thuật toán.</p>
                 </div>
               </div>
@@ -450,13 +454,13 @@
           </div>
           <div class="card-body about-body">
             <h4>1. Nguồn Gốc & Đặc Điểm Dữ Liệu</h4>
-            <p>Hệ thống sử dụng bộ dữ liệu chuỗi thời gian được thiết kế theo quy chuẩn quan trắc môi trường đô thị Hà Nội gồm 8 trạm với đầy đủ 6 thông số ô nhiễm ($PM_{2.5}, PM_{10}, CO, NO_2, O_3, SO_2$) và 3 thông số khí tượng (nhiệt độ, độ ẩm, tốc độ gió). Toàn bộ dữ liệu được chia theo thứ tự thời gian (Chronological: 70% Train, 15% Val, 15% Test) loại bỏ hoàn toàn rò rỉ thông tin tương lai.</p>
+            <p>Hệ thống sử dụng bộ dữ liệu chuỗi thời gian quan trắc môi trường đô thị trên 23 trạm trọng điểm thuộc 15 tỉnh thành Việt Nam với đầy đủ 6 thông số ô nhiễm ($PM_{2.5}, PM_{10}, CO, NO_2, O_3, SO_2$) và 3 thông số khí tượng (nhiệt độ, độ ẩm, tốc độ gió). Toàn bộ dữ liệu được chia theo thứ tự thời gian (Chronological: 70% Train, 15% Val, 15% Test) loại bỏ hoàn toàn rò rỉ thông tin tương lai.</p>
 
             <h4>2. Xử Lý Địa Không Gian Với GeoPandas</h4>
-            <p>Hệ thống nạp các ranh giới quận (Districts GeoJSON) và trạm đo (Stations GeoJSON) vào GeoPandas. Kiểm tra hệ tọa độ CRS EPSG:4326 (WGS84), chuyển đổi sang hệ tọa độ phẳng UTM Zone 48N (EPSG:32648) để tính toán diện tích quận chính xác theo $km^2$ và khoảng cách Euclid chính xác từ từng trạm về trung tâm Hoàn Kiếm.</p>
+            <p>Hệ thống nạp các ranh giới tỉnh thành và trạm đo vào GeoPandas. Kiểm tra hệ tọa độ CRS EPSG:4326 (WGS84), chuyển đổi sang hệ tọa độ phẳng UTM Zone 48N (EPSG:32648) để tính toán diện tích và khoảng cách Euclid chính xác theo mét.</p>
 
-            <h4>3. Kiến Trúc Backend Tối Ưu 20 Người Dùng Đồng Thời (20 CCU)</h4>
-            <p>FastAPI áp dụng cơ chế nạp Singleton tại sự kiện Lifespan: toàn bộ trọng số mô hình ML/DL, scaler và GeoDataFrame được nạp sẵn vào RAM khi server khởi động. Khi có yêu cầu dự báo, backend chỉ mất vài mili-giây để vector hóa và suy luận, không đọc đĩa I/O lặp lại, đáp ứng mượt mà tải 20 CCU trên máy cá nhân.</p>
+            <h4>3. Kiến Trúc Tối Ưu 20 Người Dùng Đồng Thời (20 CCU)</h4>
+            <p>Toàn bộ trọng số mô hình ML/DL, scaler và GeoDataFrame được nạp sẵn vào RAM khi server khởi động. Khi có yêu cầu dự báo, hệ thống chỉ mất vài mili-giây để vector hóa và suy luận, không đọc đĩa I/O lặp lại, đáp ứng mượt mà tải 20 CCU trên máy cá nhân.</p>
 
             <h4>4. Giới Hạn & Tuyên Bố Miễn Trừ</h4>
             <div class="alert alert-warning">
@@ -530,7 +534,7 @@
           Do kích thước siêu nhỏ, các hạt PM2.5 có thể vượt qua hàng rào lông rung niêm mạc mũi và khí quản, <strong>đi thẳng vào tận phế nang phổi</strong> và khuếch tán trực tiếp vào mao mạch máu. Quá trình này gây ra phản ứng viêm toàn thân, kích thích hình thành mảng xơ vữa động mạch, gia tăng đột quỵ não, thiếu máu cơ tim và thúc đẩy đột biến tế bào dẫn đến ung thư phổi.
         </p>
 
-        <h5 class="modal-section-title"><i class="fa-solid fa-industry"></i> Cơ Cấu Nguồn Phát Thải PM2.5 Tại Đô Thị Hà Nội</h5>
+        <h5 class="modal-section-title"><i class="fa-solid fa-industry"></i> Cơ Cấu Nguồn Phát Thải PM2.5 Tại Các Đô Thị Việt Nam</h5>
         <div style="background:#f8fafc; border-radius:8px; padding:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
           <div style="margin-bottom:8px;">
             <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:3px;">
@@ -563,7 +567,7 @@
 
         <h5 class="modal-section-title"><i class="fa-solid fa-shield-virus"></i> Khuyến Nghị Phòng Ngừa Y Tế</h5>
         <div style="background:#ecfeff; border:1px solid #a5f3fc; border-radius:8px; padding:12px; font-size:0.88rem; color:#0e7490; line-height:1.6;">
-          • Khi nồng độ PM2.5 &gt; 35.4 µg/m³: Luôn đeo khẩu trang lọc bụi mịn chuẩn <strong>N95, KN95 hoặc KF94</strong> khi di chuyển ngoài đường (khẩu trang y tế thông thường chỉ lọc được 20-30% PM2.5).<br>
+          • Khi nồng độ PM2.5 &gt; 35.4 µg/m³: Luôn đeo khẩu trang lọc bụi mịn chuẩn <strong>N95, KN95 hoặc KF94</strong> khi di chuyển ngoài đường.<br>
           • Trong gia đình: Đóng kín cửa sổ vào buổi sáng sớm, bật máy lọc không khí có màng lọc HEPA tiêu chuẩn H13.<br>
           • Nhóm đối tượng nhạy cảm (trẻ nhỏ, người lớn tuổi, phụ nữ có thai, người có tiền sử hen suyễn) cần hạn chế tập thể dục ngoài trời khi AQI &ge; Kém.
         </div>
@@ -589,7 +593,7 @@
         <h5 class="modal-section-title"><i class="fa-solid fa-cloud-arrow-down"></i> Hiện Tượng Nghịch Nhiệt Tầng Mặt (Temperature Inversion)</h5>
         <p style="margin-bottom:12px; line-height:1.6;">
           Thông thường, nhiệt độ không khí giảm dần theo độ cao (trung bình giảm 0.65°C mỗi 100m). Nhờ đó, không khí ấm sát mặt đất bốc lên cao tạo chuyển động đối lưu giúp phát tán và pha loãng bụi mịn.<br><br>
-          Tuy nhiên, vào mùa đông Hà Nội (từ tháng 10 đến tháng 3), vào ban đêm trời quang mây, mặt đất bị mất nhiệt bức xạ rất nhanh, làm <strong>lớp không khí sát mặt đất lạnh hơn lớp không khí phía trên</strong>. Hiện tượng này tạo thành một <strong>"chiếc nắp đậy khí quyển"</strong> giữ chặt toàn bộ khói bụi xe cộ, sinh hoạt ở tầng sát mặt đất (dưới 200m), khiến nồng độ PM2.5 tăng vọt lên mức Nguy hại vào sáng sớm.
+          Tuy nhiên, vào mùa đông, vào ban đêm trời quang mây, mặt đất bị mất nhiệt bức xạ rất nhanh, làm <strong>lớp không khí sát mặt đất lạnh hơn lớp không khí phía trên</strong>. Hiện tượng này tạo thành một <strong>"chiếc nắp đậy khí quyển"</strong> giữ chặt toàn bộ khói bụi xe cộ, sinh hoạt ở tầng sát mặt đất (dưới 200m), khiến nồng độ PM2.5 tăng vọt lên mức Nguy hại vào sáng sớm.
         </p>
 
         <h5 class="modal-section-title"><i class="fa-solid fa-droplet"></i> Tác Động Của Độ Ẩm Tương Đối (% RH)</h5>
@@ -614,18 +618,18 @@
   </div>
 
   <!-- =========================================================================
-       MODAL 3: HẠ TẦNG GEOPANDAS & MẠNG LƯỚI 8 TRẠM (KHI BẤM Ô GEOPANDAS)
+       MODAL 3: HẠ TẦNG GEOPANDAS & MẠNG LƯỚI 23 TRẠM (KHI BẤM Ô GEOPANDAS)
        ========================================================================= -->
   <div id="modal-geo-detail" class="modal-backdrop">
     <div class="modal-card modal-lg">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-satellite text-cyan"></i> Kiến Trúc Địa Không Gian GeoPandas & Mạng Lưới 8 Trạm</h3>
+        <h3><i class="fa-solid fa-satellite text-cyan"></i> Kiến Trúc Địa Không Gian GeoPandas & Mạng Lưới 23 Trạm Quan Trắc</h3>
         <button class="modal-close" data-modal="modal-geo-detail">&times;</button>
       </div>
       <div class="modal-body">
         <div class="modal-highlight-box">
           <h4><i class="fa-solid fa-map-location-dot text-cyan"></i> Nền Tảng Phân Tích Không Gian & Hệ Tọa Độ Chuẩn</h4>
-          <p>Hệ thống tích hợp thư viện GeoPandas xử lý các lớp đối tượng ranh giới quận (MultiPolygon) và điểm trạm quan trắc (Point), bảo đảm tính toán không gian chính xác tuyệt đối.</p>
+          <p>Hệ thống tích hợp thư viện GeoPandas xử lý các lớp đối tượng ranh giới tỉnh thành và 23 trạm quan trắc trên toàn quốc, bảo đảm tính toán không gian chính xác tuyệt đối.</p>
         </div>
 
         <h5 class="modal-section-title"><i class="fa-solid fa-compass"></i> Chuyển Đổi Hệ Tọa Độ Trắc Địa (CRS)</h5>
@@ -636,69 +640,13 @@
           </div>
           <div class="modal-metric-box">
             <span class="title">Hệ Phẳng: EPSG:32648 (UTM Zone 48N)</span>
-            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Đơn vị mét (m). GeoPandas chuyển đổi sang UTM Zone 48N để tính diện tích đa giác các quận (km²) và khoảng cách Euclid chính xác từ từng trạm về tâm Hoàn Kiếm.</p>
+            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Đơn vị mét (m). GeoPandas chuyển đổi sang UTM Zone 48N để tính diện tích đa giác các vùng (km²) và khoảng cách Euclid chính xác giữa các trạm đo.</p>
           </div>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-network-wired"></i> Mạng Lưới 8 Trạm Quan Trắc Không Gian Hà Nội</h5>
-        <div class="table-responsive" style="margin-bottom:16px;">
-          <table class="data-table" style="font-size:0.84rem;">
-            <thead>
-              <tr>
-                <th>Mã Trạm</th>
-                <th>Tên Trạm</th>
-                <th>Quận Đại Diện</th>
-                <th>Tọa Độ (Lat, Lon)</th>
-                <th>Khoảng Cách Về Tâm</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td><strong>VN_HN_01</strong></td><td>Trạm Hoàn Kiếm</td><td>Hoàn Kiếm</td><td>21.0285, 105.8542</td><td><strong>0.0 km</strong> (Tâm mốc)</td></tr>
-              <tr><td><strong>VN_HN_02</strong></td><td>Trạm Cầu Giấy</td><td>Cầu Giấy</td><td>21.0360, 105.7905</td><td>6.2 km</td></tr>
-              <tr><td><strong>VN_HN_03</strong></td><td>Trạm Hà Đông</td><td>Hà Đông</td><td>20.9720, 105.7760</td><td>11.5 km</td></tr>
-              <tr><td><strong>VN_HN_04</strong></td><td>Trạm Ba Đình</td><td>Ba Đình</td><td>21.0340, 105.8250</td><td>2.8 km</td></tr>
-              <tr><td><strong>VN_HN_05</strong></td><td>Trạm Tây Hồ</td><td>Tây Hồ</td><td>21.0650, 105.8200</td><td>4.5 km</td></tr>
-              <tr><td><strong>VN_HN_06</strong></td><td>Trạm Long Biên</td><td>Long Biên</td><td>21.0450, 105.8900</td><td>5.1 km</td></tr>
-              <tr><td><strong>VN_HN_07</strong></td><td>Trạm Hai Bà Trưng</td><td>Hai Bà Trưng</td><td>21.0050, 105.8600</td><td>3.4 km</td></tr>
-              <tr><td><strong>VN_HN_08</strong></td><td>Trạm Đống Đa</td><td>Đống Đa</td><td>21.0180, 105.8280</td><td>3.9 km</td></tr>
-            </tbody>
-          </table>
         </div>
 
         <h5 class="modal-section-title"><i class="fa-solid fa-server"></i> Tối Ưu Singleton Đảm Bảo 20 CCU</h5>
         <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:8px; padding:12px; font-size:0.88rem; color:#0f766e; line-height:1.6;">
-          Toàn bộ GeoDataFrame ranh giới quận và vị trí trạm được nạp sẵn vào RAM khi máy chủ khởi động. Nhờ cấu trúc Singleton trong bộ nhớ, các truy vấn không gian (khoảng cách, lọc vùng đệm) chỉ mất dưới 2 mili-giây, bảo đảm hệ thống vận hành trơn tru và đáp ứng trên 20 người dùng truy cập đồng thời.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================================
-       MODAL 4: QUÉT MÃ QR DÙNG TRÊN ĐIỆN THOẠI 24/7 (KHÔNG CẦN BẬT MÁY CHỦ)
-       ========================================================================= -->
-  <div id="mobile-qr-modal" class="modal-backdrop">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-mobile-screen-button"></i> Mở Ứng Dụng Trên Điện Thoại</h3>
-        <button class="modal-close" id="btn-close-modal" data-modal="mobile-qr-modal">&times;</button>
-      </div>
-      <div class="modal-body text-center">
-        <p style="margin-bottom:14px; font-size:0.95rem; color:#334155; line-height:1.6;">
-          <span style="display:inline-block; background:#ecfdf5; color:#047857; font-weight:700; padding:6px 14px; border-radius:8px; border:1px solid #a7f3d0; margin-bottom:8px; font-size:0.92rem;">
-            <i class="fa-solid fa-circle-check"></i> Khác Wi-Fi và 3G / 4G / 5G vẫn vào được (Tắt máy chủ vẫn xem 24/7)
-          </span><br>
-          Dùng camera điện thoại quét mã QR bên dưới để mở giao diện:
-        </p>
-        <div style="display:flex; justify-content:center; margin:16px 0;">
-          <img id="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://dlhchu98-sketch.github.io/air-quality-ai/" alt="Mã QR AirSense AI" width="240" height="240" style="border-radius:12px; border:2px solid #e2e8f0; padding:10px; background:#fff; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
-        </div>
-        <div style="background:#f1f5f9; padding:10px 14px; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:700; color:#1e293b; user-select:all; display:flex; align-items:center; justify-content:center; gap:8px; word-break:break-all;">
-          <span id="mobile-url-text">https://dlhchu98-sketch.github.io/air-quality-ai/</span>
-        </div>
-        <div style="margin-top:16px; font-size:0.85rem; color:#64748b; text-align:left; line-height:1.6; background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0;">
-          <strong style="color:#0f172a;"><i class="fa-solid fa-download"></i> Cài đặt như App điện thoại (PWA):</strong><br>
-          • <b>Android (Chrome)</b>: Nhấn menu <b>⋮</b> góc phải trên ➔ Chọn <i>"Thêm vào màn hình chính"</i> hoặc <i>"Cài đặt ứng dụng"</i>.<br>
-          • <b>iPhone / iPad (Safari)</b>: Nhấn nút <b>Chia sẻ</b> (<i class="fa-solid fa-arrow-up-from-bracket"></i>) ➔ Chọn <i>"Thêm vào MH chính" (Add to Home Screen)</i>.
+          Toàn bộ GeoDataFrame ranh giới tỉnh thành và vị trí 23 trạm được nạp sẵn vào RAM khi máy chủ khởi động. Nhờ cấu trúc Singleton trong bộ nhớ, các truy vấn không gian (khoảng cách, lọc vùng đệm) chỉ mất dưới 2 mili-giây, bảo đảm hệ thống vận hành trơn tru và đáp ứng trên 20 người dùng truy cập đồng thời.
         </div>
       </div>
     </div>
@@ -709,7 +657,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   
   <!-- Project Scripts -->
-  <script src="js/embedded_data.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/embedded_data.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>
