@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AirSense AI - Hệ Thống Phân Tích & Dự Báo Chất Lượng Không Khí Toàn Quốc</title>
+  <title>AI Weather & Air Quality – Smart Weather Experience</title>
   <!-- Google Fonts & FontAwesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Leaflet CSS for Interactive Map -->
+  <!-- Leaflet CSS for Interactive Weather Map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
   <!-- PWA & Mobile Meta Tags -->
@@ -19,7 +19,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AirSense AI">
+  <meta name="apple-mobile-web-app-title" content="AI Weather">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3222/3222800.png">
   
   <!-- Custom CSS: Ocean Blue & Cyan/Teal Design System -->
@@ -27,637 +27,634 @@
 </head>
 <body>
   <div class="app-layout">
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar Navigation: 7 Tabs Chuẩn Master Prompt -->
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-icon"><i class="fa-solid fa-wind"></i></div>
+        <div class="brand-icon"><i class="fa-solid fa-cloud-sun-rain"></i></div>
         <div class="brand-text">
-          <h2>AirSense AI</h2>
-          <span>National AQI & ML Forecast</span>
+          <h2>AI WEATHER & AQI</h2>
+          <span>Smart Weather Experience</span>
         </div>
       </div>
 
       <nav class="nav-menu">
         <button class="nav-btn active" data-tab="tab-overview">
-          <i class="fa-solid fa-chart-pie"></i>
+          <i class="fa-solid fa-house-chimney-window"></i>
           <span>1. Tổng quan</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-weather">
+          <i class="fa-solid fa-cloud-sun"></i>
+          <span>2. Thời tiết</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-compare">
+          <i class="fa-solid fa-code-compare"></i>
+          <span>3. So sánh thời tiết</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-airquality">
+          <i class="fa-solid fa-smog"></i>
+          <span>4. Chất lượng không khí</span>
+        </button>
+        <button class="nav-btn" data-tab="tab-aiforecast">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>5. Dự báo bụi mịn</span>
         </button>
         <button class="nav-btn" data-tab="tab-map">
           <i class="fa-solid fa-map-location-dot"></i>
-          <span>2. Bản đồ không gian</span>
+          <span>6. Bản đồ thời tiết</span>
         </button>
-        <button class="nav-btn" data-tab="tab-forecast">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
-          <span>3. Dự báo AI</span>
-        </button>
-        <button class="nav-btn" data-tab="tab-results">
-          <i class="fa-solid fa-chart-line"></i>
-          <span>4. Kết quả & Phân tích</span>
-        </button>
-        <button class="nav-btn" data-tab="tab-evaluation">
-          <i class="fa-solid fa-scale-balanced"></i>
-          <span>5. Đánh giá mô hình</span>
-        </button>
-        <button class="nav-btn" data-tab="tab-about">
-          <i class="fa-solid fa-book-open"></i>
-          <span>6. Giới thiệu & Hạn chế</span>
+        <button class="nav-btn" data-tab="tab-outdoor">
+          <i class="fa-solid fa-compass"></i>
+          <span>7. Khám phá – Đi chơi</span>
         </button>
       </nav>
 
       <div class="sidebar-footer">
         <div class="system-status-badge">
           <span class="status-dot pulse"></span>
-          <span id="backend-status-text">Hệ thống 20 CCU Ready</span>
+          <span id="backend-status-text">34 Tỉnh Thành • Sẵn Sàng</span>
         </div>
-        <small class="disclaimer-mini">Mục đích học tập & nghiên cứu</small>
+        <small class="disclaimer-mini">Mục đích học tập & nghiên cứu khí tượng</small>
       </div>
     </aside>
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Top Bar: Nút làm mới bấm mượt, KHÔNG còn nút QR -->
+      <!-- Top Bar: Có nút đổi Theme (Light/Dark), Nút Làm Mới, KHÔNG còn nút QR -->
       <header class="topbar">
         <div class="page-title-box">
-          <h1 id="page-title">Tổng quan Chất lượng Không khí Toàn Quốc</h1>
-          <p id="page-subtitle">Giám sát chuỗi thời gian & dự báo đa bước tại 23 trạm quan trắc trên 15 tỉnh thành</p>
+          <h1 id="page-title">
+            <i class="fa-solid fa-bolt" style="color:var(--accent-cyan);font-size:18px;"></i>
+            AI WEATHER & AIR QUALITY – SMART WEATHER EXPERIENCE
+          </h1>
+          <p id="page-subtitle">Theo dõi, so sánh & dự báo thông minh thời tiết và bụi mịn tại 34 tỉnh/thành phố Việt Nam</p>
         </div>
         <div class="topbar-actions">
           <div class="time-chip" id="current-clock">
             <i class="fa-regular fa-clock"></i> <span id="clock-val">Đang tải...</span>
           </div>
+          <!-- Nút chuyển đổi Light Mode / Dark Mode -->
+          <button class="theme-toggle-btn" id="btn-theme-toggle" onclick="App.toggleTheme()" title="Chuyển chế độ Sáng / Tối">
+            <i class="fa-solid fa-moon" id="theme-icon"></i>
+          </button>
+          <!-- Nút Làm Mới hoạt động mượt mà có hiệu ứng quay và thông báo toast -->
           <button class="btn btn-outline" id="btn-refresh" onclick="App.refreshAllDataWithAnimation()" title="Làm mới dữ liệu quan trắc">
             <i class="fa-solid fa-arrows-rotate"></i> <span>Làm mới</span>
           </button>
         </div>
       </header>
 
-      <!-- Location Search & Quick Filter Bar: Đầy đủ các tỉnh thành cả nước -->
+      <!-- Location Search & Quick Region Bar: 34 Tỉnh Thành Cả Nước -->
       <section class="location-search-section">
         <div class="search-bar-row">
           <div class="search-input-wrapper">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="input-location-search" placeholder="Tìm kiếm tỉnh, thành phố, quận hoặc trạm quan trắc (Hà Nội, TP.HCM, Đà Nẵng, Cần Thơ, Hải Phòng...)..." autocomplete="off">
+            <input type="text" id="input-location-search" placeholder="Tìm kiếm nhanh trong 34 tỉnh thành (Hà Nội, TP.HCM, Đà Nẵng, Cần Thơ, Hải Phòng, Huế, Quảng Ninh, Khánh Hòa, Lâm Đồng...)..." autocomplete="off">
             <div class="search-results-dropdown" id="search-results-dropdown"></div>
           </div>
           <div class="quick-city-badge">
             <i class="fa-solid fa-globe" style="color:var(--primary);"></i>
-            <span>Mạng lưới: <strong>23 Trạm Quan Trắc / 15 Tỉnh Thành</strong></span>
+            <span>Mạng lưới: <strong>34 Tỉnh Thành / 3 Miền</strong></span>
           </div>
         </div>
-        <div class="district-pills-row">
-          <span class="pills-label"><i class="fa-solid fa-map-pin"></i> Khu vực / Tỉnh:</span>
-          <button class="district-pill active" data-location="all">Tất cả (Toàn Quốc)</button>
-          <button class="district-pill" data-location="Hà Nội">Hà Nội (8 trạm)</button>
-          <button class="district-pill" data-location="TP. Hồ Chí Minh">TP. Hồ Chí Minh (3 trạm)</button>
-          <button class="district-pill" data-location="Đà Nẵng">Đà Nẵng (2 trạm)</button>
-          <button class="district-pill" data-location="Hải Phòng">Hải Phòng</button>
-          <button class="district-pill" data-location="Cần Thơ">Cần Thơ</button>
-          <button class="district-pill" data-location="Quảng Ninh">Quảng Ninh</button>
-          <button class="district-pill" data-location="Khánh Hòa">Khánh Hòa (Nha Trang)</button>
-          <button class="district-pill" data-location="Bình Dương">Bình Dương</button>
-          <button class="district-pill" data-location="Thừa Thiên Huế">Huế</button>
-          <button class="district-pill" data-location="Lâm Đồng">Đà Lạt (Lâm Đồng)</button>
-          <button class="district-pill" data-location="Bà Rịa - Vũng Tàu">Vũng Tàu</button>
-          <button class="district-pill" data-location="Bắc Ninh">Bắc Ninh</button>
-          <button class="district-pill" data-location="Nghệ An">Nghệ An (Vinh)</button>
-          <button class="district-pill" data-location="Thái Nguyên">Thái Nguyên</button>
-          <button class="district-pill" data-location="Đồng Nai">Đồng Nai</button>
+        <div class="district-pills-row" id="region-pills-container">
+          <span class="pills-label"><i class="fa-solid fa-filter"></i> Khu vực:</span>
+          <button class="district-pill active" onclick="App.filterByRegion('all')">Tất cả (34 tỉnh)</button>
+          <button class="district-pill" onclick="App.filterByRegion('Miền Bắc')">Miền Bắc (14)</button>
+          <button class="district-pill" onclick="App.filterByRegion('Miền Trung')">Miền Trung & Tây Nguyên (11)</button>
+          <button class="district-pill" onclick="App.filterByRegion('Miền Nam')">Miền Nam (9)</button>
+        </div>
+        <div class="district-pills-row" id="province-pills-container" style="margin-top: 4px;">
+          <span class="pills-label"><i class="fa-solid fa-location-dot"></i> Địa phương:</span>
+          <!-- Dynamic province pills injected by JS -->
         </div>
       </section>
 
-      <!-- TAB 1: TỔNG QUAN -->
-      <section id="tab-overview" class="tab-pane active">
-        <!-- 4 Stat Cards: 3 ô bấm vào hiện modal chi tiết chuyên sâu -->
-        <div class="stat-grid">
-          <!-- Ô 1: AQI Trung Bình -->
-          <div class="stat-card primary">
-            <div class="stat-header">
-              <span>AQI Trung Bình Toàn Quốc</span>
-              <i class="fa-solid fa-smog"></i>
+      <!-- TAB 1: TỔNG QUAN (OVERVIEW) -->
+      <div class="tab-pane active" id="tab-overview">
+        <!-- DYNAMIC WEATHER ANIMATION HERO STAGE -->
+        <div class="weather-stage weather-partly-cloudy" id="dynamic-weather-hero">
+          <!-- Animation Layer (Mặt trời, Mây, Mưa, Tia chớp, Sao, Gió, Sương mù) -->
+          <div class="anim-layer" id="anim-stage-layer">
+            <div class="sun-element" id="hero-sun">
+              <div class="sun-rays"></div>
             </div>
-            <div class="stat-body">
-              <h2 id="overview-aqi-val">--</h2>
-              <span class="badge" id="overview-aqi-badge">Đang tính...</span>
-            </div>
-            <div class="stat-footer" id="overview-aqi-desc">Chỉ số bụi mịn PM2.5 trung bình 23 trạm quan trắc</div>
+            <div class="cloud cloud-1" id="hero-cloud-1"></div>
+            <div class="cloud cloud-2" id="hero-cloud-2"></div>
+            <div class="rain-stream" id="hero-rain-stream" style="display:none;"></div>
+            <div class="lightning-flash" id="hero-lightning-flash" style="display:none;"></div>
+            <div class="fog-layer" id="hero-fog-layer" style="display:none;"></div>
+            <div class="moon-element" id="hero-moon" style="display:none;"></div>
+            <div class="star-field" id="hero-star-field" style="display:none;"></div>
           </div>
 
-          <!-- Ô 2: Bụi Mịn PM2.5 (CLICKABLE MODAL 1) -->
-          <div class="stat-card clickable" id="card-pm25-click" title="Nhấp chuột để xem phân tích chuyên sâu tiêu chuẩn QCVN, WHO và tác động y tế">
-            <div class="stat-header">
-              <span>Bụi Mịn PM2.5</span>
-              <i class="fa-solid fa-microscope"></i>
-            </div>
-            <div class="stat-body">
-              <h2 id="overview-pm25-val">--</h2>
-              <span class="unit">µg/m³</span>
-            </div>
-            <div class="stat-footer">
-              <span>QCVN 05:2023 chuẩn 24h = 50 µg/m³</span>
-              <span class="card-click-hint"><span>Bấm xem chi tiết</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-            </div>
-          </div>
-
-          <!-- Ô 3: Nhiệt độ & Độ ẩm (CLICKABLE MODAL 2) -->
-          <div class="stat-card clickable" id="card-meteo-click" title="Nhấp chuột để xem phân tích khí tượng, hiện tượng nghịch nhiệt và tầng biên khí quyển">
-            <div class="stat-header">
-              <span>Nhiệt độ & Độ ẩm</span>
-              <i class="fa-solid fa-temperature-half"></i>
-            </div>
-            <div class="stat-body">
-              <h2 id="overview-weather-val">--°C</h2>
-              <span class="unit" id="overview-humidity-val">--% RH</span>
-            </div>
-            <div class="stat-footer">
-              <span id="overview-wind-val">Gió: -- m/s</span>
-              <span class="card-click-hint"><span>Bấm xem chi tiết</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-            </div>
-          </div>
-
-          <!-- Ô 4: Hạ Tầng GeoPandas (CLICKABLE MODAL 3) -->
-          <div class="stat-card success clickable" id="card-geo-click" title="Nhấp chuột để xem kiến trúc địa không gian GeoPandas, CRS WGS84/UTM và mạng lưới trạm">
-            <div class="stat-header">
-              <span>Mạng Lưới Quan Trắc</span>
-              <i class="fa-solid fa-satellite"></i>
-            </div>
-            <div class="stat-body">
-              <h2>23 / 23</h2>
-              <span class="badge badge-success">Online (15 Tỉnh)</span>
-            </div>
-            <div class="stat-footer">
-              <span>Hạ tầng GeoPandas GIS</span>
-              <span class="card-click-hint"><span>Bấm xem chi tiết</span> <i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Health Alert Box -->
-        <div class="health-alert-box" id="health-alert-box">
-          <div class="alert-icon"><i class="fa-solid fa-shield-heart"></i></div>
-          <div class="alert-content">
-            <h4 id="health-alert-title">Khuyến nghị Y tế & Sức khỏe Cộng đồng</h4>
-            <p id="health-alert-desc">Đang tải thông tin khuyến nghị sức khỏe theo mức độ ô nhiễm không khí...</p>
-          </div>
-        </div>
-
-        <!-- Stations Table Summary: 23 trạm trên toàn quốc -->
-        <div class="card">
-          <div class="card-header">
-            <h3><i class="fa-solid fa-tower-observation"></i> Trạng Thái Quan Trắc 23 Trạm Trên 15 Tỉnh Thành Việt Nam</h3>
-            <span class="card-tag">Dữ liệu quan trắc thời gian thực</span>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Mã Trạm</th>
-                    <th>Tên Trạm Quan Trắc</th>
-                    <th>Tỉnh / Thành Phố</th>
-                    <th>Khu Vực</th>
-                    <th>PM2.5 (µg/m³)</th>
-                    <th>PM10 (µg/m³)</th>
-                    <th>NO2 (µg/m³)</th>
-                    <th>Chất Lượng AQI</th>
-                    <th>Hành Động</th>
-                  </tr>
-                </thead>
-                <tbody id="overview-stations-tbody">
-                  <tr><td colspan="9" class="text-center">Đang nạp dữ liệu mạng lưới trạm...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 2: BẢN ĐỒ KHÔNG GIAN -->
-      <section id="tab-map" class="tab-pane">
-        <div class="map-controls-card">
-          <div class="filter-group">
-            <label><i class="fa-solid fa-layer-group"></i> Hiển thị lớp địa không gian:</label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="layer-districts-check" checked> Điểm trạm quan trắc toàn quốc (23 trạm)
-            </label>
-            <label class="checkbox-label">
-              <input type="checkbox" id="layer-stations-check" checked> Bán kính ảnh hưởng vi khí hậu (Buffer 5km)
-            </label>
-          </div>
-          <div class="legend-bar">
-            <span class="legend-item"><span class="color-dot" style="background:#10b981;"></span> Tốt (0-12)</span>
-            <span class="legend-item"><span class="color-dot" style="background:#f59e0b;"></span> Trung bình (12-35.4)</span>
-            <span class="legend-item"><span class="color-dot" style="background:#f97316;"></span> Kém (35.4-55.4)</span>
-            <span class="legend-item"><span class="color-dot" style="background:#ef4444;"></span> Xấu (55.4-150)</span>
-            <span class="legend-item"><span class="color-dot" style="background:#8b5cf6;"></span> Rất xấu / Nguy hại (&gt;150)</span>
-          </div>
-        </div>
-
-        <div class="card map-card">
-          <div id="leaflet-map" style="height: 600px; border-radius: var(--radius-md);"></div>
-        </div>
-      </section>
-
-      <!-- TAB 3: DỰ BÁO AI -->
-      <section id="tab-forecast" class="tab-pane">
-        <div class="forecast-layout-grid">
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-sliders"></i> Cấu Hình Mô Hình Dự Báo AI Đa Bước</h3>
-            </div>
-            <div class="card-body">
-              <form id="form-run-forecast">
-                <div class="form-group">
-                  <label for="select-station"><i class="fa-solid fa-location-dot"></i> Chọn trạm quan trắc (Toàn quốc):</label>
-                  <select id="select-station" class="form-control" required></select>
+          <!-- Hero Content Foreground -->
+          <div class="weather-hero-content">
+            <div class="weather-hero-left">
+              <div class="weather-badge-group">
+                <span class="weather-location-pill" id="hero-location-name">
+                  <i class="fa-solid fa-location-dot"></i> Hà Nội • Thủ đô
+                </span>
+                <span class="weather-cond-badge" id="hero-cond-badge">
+                  <i class="fa-solid fa-cloud-sun"></i> Ít mây, nắng gián đoạn
+                </span>
+              </div>
+              <div class="temp-large-display">
+                <span class="temp-val-hero" id="hero-temp-val">24.5°</span>
+                <span class="temp-feels-hero" id="hero-feels-val">Cảm giác như 25.2°C</span>
+              </div>
+              <p class="weather-summary-text" id="hero-summary-text">
+                Thời tiết tại Hà Nội thuận lợi, gió Đông Bắc mát mẻ. Chất lượng không khí mức Kém (AQI 69), nhóm nhạy cảm nên chú ý.
+              </p>
+              <div class="hero-telemetry-row">
+                <div class="hero-telemetry-pill">
+                  <i class="fa-solid fa-droplet"></i> Độ ẩm: <strong id="hero-hum-val">72%</strong>
                 </div>
-
-                <div class="form-group">
-                  <label for="select-pollutant"><i class="fa-solid fa-atom"></i> Thông số dự báo:</label>
-                  <select id="select-pollutant" class="form-control" disabled>
-                    <option value="pm25" selected>Bụi mịn PM2.5 (µg/m³) - Chỉ số mục tiêu chính</option>
-                  </select>
+                <div class="hero-telemetry-pill">
+                  <i class="fa-solid fa-wind"></i> Gió: <strong id="hero-wind-val">3.2 m/s Đông Bắc</strong>
                 </div>
-
-                <div class="form-group">
-                  <label for="select-model"><i class="fa-solid fa-brain"></i> Mô hình Trí tuệ Nhân tạo:</label>
-                  <select id="select-model" class="form-control" required>
-                    <option value="Random_Forest" selected>Random Forest Regressor (Khuyên dùng - R² = 0.74, MAE = 6.42)</option>
-                    <option value="Neural_Network">Mạng Neural Network (MLP / Deep Architecture - R² = 0.70)</option>
-                    <option value="Baseline_Persistence">Baseline (Mô hình lưu giữ Persistence t-1)</option>
-                  </select>
+                <div class="hero-telemetry-pill">
+                  <i class="fa-solid fa-umbrella"></i> Mưa: <strong id="hero-rain-val">15%</strong>
                 </div>
-
-                <div class="form-group">
-                  <label for="select-horizon"><i class="fa-solid fa-clock-rotate-left"></i> Chân trời dự báo (Horizon):</label>
-                  <select id="select-horizon" class="form-control">
-                    <option value="24" selected>Dự báo 24 giờ tiếp theo (+1h đến +24h)</option>
-                    <option value="48">Dự báo 48 giờ tiếp theo (+1h đến +48h)</option>
-                    <option value="12">Dự báo 12 giờ tiếp theo</option>
-                    <option value="6">Dự báo 6 giờ tiếp theo</option>
-                  </select>
+                <div class="hero-telemetry-pill">
+                  <i class="fa-solid fa-sun"></i> UV: <strong id="hero-uv-val">5 (Vừa phải)</strong>
                 </div>
-
-                <button type="submit" class="btn btn-primary w-100" id="btn-submit-forecast">
-                  <i class="fa-solid fa-bolt"></i> Kích Hoạt Dự Báo AI
-                </button>
-              </form>
+                <div class="hero-telemetry-pill">
+                  <i class="fa-solid fa-smog"></i> AQI: <strong id="hero-aqi-val">69 (Kém)</strong>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-circle-info"></i> Đặc Tính Mô Hình & Khả Năng Xử Lý Đồng Thời</h3>
-            </div>
-            <div class="card-body">
-              <div class="features-info-grid">
-                <div class="info-card">
-                  <h4><i class="fa-solid fa-bolt-lightning text-cyan"></i> Độ Trễ Thấp (&lt; 3ms)</h4>
-                  <p>Mô hình Random Forest và mạng nơ-ron được nạp Singleton tại RAM. Không đọc lại file disk, tối ưu tốc độ phản hồi cực nhanh.</p>
-                </div>
-                <div class="info-card">
-                  <h4><i class="fa-solid fa-users text-cyan"></i> Tối Ưu Tải 20 CCU</h4>
-                  <p>Backend FastAPI bất đồng bộ xử lý mượt mà hơn 20 người dùng truy cập và tính toán dự báo cùng thời điểm.</p>
-                </div>
-                <div class="info-card">
-                  <h4><i class="fa-solid fa-chart-line text-cyan"></i> Khoảng Tin Cậy &plusmn;&sigma;</h4>
-                  <p>Kết quả dự báo đi kèm dải cận trên / cận dưới thể hiện độ không chắc chắn khoa học của thuật toán.</p>
-                </div>
+            <div class="weather-hero-right">
+              <!-- Nút chuyển đổi khung giờ xem trước hiệu ứng động -->
+              <div class="time-scrub-controls">
+                <button class="time-scrub-btn active" onclick="App.scrubTimeOfDay('now')">Hiện tại</button>
+                <button class="time-scrub-btn" onclick="App.scrubTimeOfDay('noon')">Trưa (Nắng)</button>
+                <button class="time-scrub-btn" onclick="App.scrubTimeOfDay('sunset')">Hoàng hôn</button>
+                <button class="time-scrub-btn" onclick="App.scrubTimeOfDay('night')">Đêm (Trăng)</button>
               </div>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- TAB 4: KẾT QUẢ & PHÂN TÍCH -->
-      <section id="tab-results" class="tab-pane">
-        <div class="results-metadata-banner">
-          <div class="meta-item">
-            <span>Trạm Quan Trắc:</span>
-            <strong id="meta-station-name">Chưa chọn</strong>
+        <!-- 3 Ô THỐNG KÊ CLICKABLE (PM2.5, Nhiệt độ & Độ ẩm, Hạ tầng Geopandas - Click mở modal theo yêu cầu) -->
+        <div class="grid-3">
+          <div class="card stat-card-clickable" onclick="App.openStatModal('pm25')">
+            <div class="stat-card-header">
+              <span class="stat-title"><i class="fa-solid fa-smog" style="color:var(--accent-cyan);"></i> Bụi Mịn PM2.5</span>
+              <span class="stat-badge" id="card-pm25-badge" style="background:#fef3c7;color:#d97706;">AQI 69</span>
+            </div>
+            <div class="stat-value-box">
+              <span class="stat-num" id="card-pm25-val">38.5</span>
+              <span class="stat-unit">µg/m³</span>
+            </div>
+            <div class="stat-subinfo">
+              <span id="card-pm25-status">Trạng thái: Kém (nhạy cảm)</span>
+              <span class="click-hint"><i class="fa-solid fa-circle-info"></i> Chi tiết</span>
+            </div>
           </div>
-          <div class="meta-item">
-            <span>Mô Hình AI:</span>
-            <strong id="meta-model-name">--</strong>
+
+          <div class="card stat-card-clickable" onclick="App.openStatModal('weather')">
+            <div class="stat-card-header">
+              <span class="stat-title"><i class="fa-solid fa-temperature-half" style="color:#0284c7;"></i> Nhiệt Độ & Độ Ẩm</span>
+              <span class="stat-badge" style="background:#e0f2fe;color:#0284c7;">Mát mẻ</span>
+            </div>
+            <div class="stat-value-box">
+              <span class="stat-num" id="card-temp-val">24.5°C</span>
+              <span class="stat-unit" id="card-hum-val">/ 72%</span>
+            </div>
+            <div class="stat-subinfo">
+              <span id="card-dew-val">Điểm sương: 19.2°C • Gió 3.2m/s</span>
+              <span class="click-hint"><i class="fa-solid fa-circle-info"></i> Chi tiết</span>
+            </div>
           </div>
-          <div class="meta-item">
-            <span>Thời Điểm Cơ Sở:</span>
-            <strong id="meta-base-time">--</strong>
-          </div>
-          <div class="meta-item">
-            <span>Nồng Độ Hiện Tại:</span>
-            <strong id="meta-current-pm25">-- µg/m³</strong>
+
+          <div class="card stat-card-clickable" onclick="App.openStatModal('geopandas')">
+            <div class="stat-card-header">
+              <span class="stat-title"><i class="fa-solid fa-draw-polygon" style="color:var(--accent-teal);"></i> Hạ Tầng Geopandas</span>
+              <span class="stat-badge" style="background:#ccfbf1;color:#0f766e;">GIS 34 Tỉnh</span>
+            </div>
+            <div class="stat-value-box">
+              <span class="stat-num">34</span>
+              <span class="stat-unit">Trạm Quan Trắc</span>
+            </div>
+            <div class="stat-subinfo">
+              <span>Mạng lưới phân bố không gian toàn quốc</span>
+              <span class="click-hint"><i class="fa-solid fa-circle-info"></i> Chi tiết</span>
+            </div>
           </div>
         </div>
 
-        <!-- Chart Container: Phối hợp quá khứ và dự báo tương lai -->
+        <!-- Quick 24h Hourly Forecast Slider Preview -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-chart-line"></i> Diễn Tiến Nồng Độ PM2.5: Thực Tế (48h qua) và Dự Báo Tương Lai</h3>
-            <span class="card-tag">Dải bóng xanh thể hiện khoảng tin cậy 95%</span>
+            <h3 class="card-title">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              Dự Báo 24 Giờ Tiếp Theo Tại <span id="quick-hourly-city">Hà Nội</span>
+            </h3>
+            <button class="btn btn-outline" style="font-size:12px;padding:4px 10px;" onclick="App.switchTab('tab-weather')">
+              Xem chi tiết <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
-          <div class="card-body">
-            <div class="chart-wrapper">
-              <canvas id="forecastChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bảng Dự Báo Chi Tiết Từng Bước -->
-        <div class="card mt-3">
-          <div class="card-header">
-            <h3><i class="fa-solid fa-list-check"></i> Chi Tiết Dự Báo Đa Bước & Khuyến Nghị Sức Khỏe Theo Giờ</h3>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Bước Dự Báo</th>
-                    <th>Thời Điểm Dự Báo</th>
-                    <th>PM2.5 Dự Báo</th>
-                    <th>Khoảng Tin Cậy (Cận dưới - Cận trên)</th>
-                    <th>Đánh Giá AQI</th>
-                    <th>Khuyến Nghị Y Tế & Hoạt Động</th>
-                  </tr>
-                </thead>
-                <tbody id="results-steps-tbody">
-                  <tr><td colspan="6" class="text-center">Hãy kích hoạt dự báo tại Tab 3 để xem bảng chi tiết...</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 5: ĐÁNH GIÁ MÔ HÌNH -->
-      <section id="tab-evaluation" class="tab-pane">
-        <div class="card">
-          <div class="card-header">
-            <h3><i class="fa-solid fa-scale-balanced"></i> Bảng Đánh Giá Định Lượng Trên Test Set Độc Lập (Hold-out Test 15%)</h3>
-            <span class="card-tag">Không rò rỉ dữ liệu (Chronological Split)</span>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Tên Mô Hình</th>
-                    <th>Loại Kiến Trúc</th>
-                    <th>MAE (µg/m³)</th>
-                    <th>RMSE (µg/m³)</th>
-                    <th>R² Score</th>
-                    <th>Thời Gian Train</th>
-                    <th>Độ Trễ Suy Luận</th>
-                    <th>Mẫu Kiểm Thử</th>
-                  </tr>
-                </thead>
-                <tbody id="eval-metrics-tbody">
-                  <tr><td colspan="8" class="text-center">Đang tải bảng đánh giá...</td></tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="hourly-scroll-container" id="overview-hourly-container">
+            <!-- Dynamic 24h hourly items injected here -->
           </div>
         </div>
 
-        <div class="eval-insight-grid mt-3">
+        <!-- Bảng Xếp Hạng Khí Tượng & AQI Toàn Quốc -->
+        <div class="grid-2">
           <div class="card">
             <div class="card-header">
-              <h3><i class="fa-solid fa-chart-column"></i> So Sánh Sai Số MAE & RMSE Giữa Các Mô Hình</h3>
+              <h3 class="card-title"><i class="fa-solid fa-trophy" style="color:#0284c7;"></i> Bảng Xếp Hạng Thời Tiết Toàn Quốc</h3>
             </div>
-            <div class="card-body">
-              <div class="chart-wrapper-sm">
-                <canvas id="evalMetricsChart"></canvas>
+            <div style="display:flex;flex-direction:column;gap:12px;" id="weather-leaderboard">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-shield-heart" style="color:var(--accent-teal);"></i> Địa Phương Không Khí Trong Lành Nhất</h3>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;" id="aqi-clean-leaderboard">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Gợi Ý Đi Chơi Hôm Nay Preview -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-compass" style="color:var(--accent-teal);"></i> Điểm Đến Lý Tưởng Đi Chơi & Dã Ngoại Hôm Nay</h3>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;" onclick="App.switchTab('tab-outdoor')">
+              Khám phá toàn bộ 34 tỉnh <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+          <div class="outdoor-cards-grid" id="overview-outdoor-preview">
+            <!-- Top 3 outdoor destinations injected here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: THỜI TIẾT CHI TIẾT (WEATHER) -->
+      <div class="tab-pane" id="tab-weather">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fa-solid fa-cloud-sun"></i>
+              Chi Tiết Thời Tiết 24 Giờ & 7 Ngày Tới – <span id="weather-detail-city">Hà Nội</span>
+            </h3>
+          </div>
+          <h4 style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">DỰ BÁO TỪNG GIỜ (24H SLIDER):</h4>
+          <div class="hourly-scroll-container" id="weather-detail-hourly">
+            <!-- 24h Hourly Forecast items -->
+          </div>
+
+          <h4 style="font-size:14px;color:var(--text-muted);margin:24px 0 12px 0;">DỰ BÁO 7 NGÀY TIẾP THEO:</h4>
+          <div class="daily-forecast-grid" id="weather-detail-daily">
+            <!-- 7-Day Forecast cards -->
+          </div>
+        </div>
+
+        <!-- 10 CHỈ SỐ KHÍ TƯỢNG ĐẦY ĐỦ -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-gauge-high"></i> Hệ Thống 10 Chỉ Số Khí Tượng Đo Đạc</h3>
+          </div>
+          <div class="telemetry-grid" id="weather-telemetry-grid">
+            <div class="telemetry-box">
+              <span class="telemetry-label">Nhiệt độ hiện tại</span>
+              <span class="telemetry-val" id="tel-temp">24.5°C</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Cảm giác như</span>
+              <span class="telemetry-val" id="tel-feels">25.2°C</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Độ ẩm tương đối</span>
+              <span class="telemetry-val" id="tel-hum">72%</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Điểm sương</span>
+              <span class="telemetry-val" id="tel-dew">19.2°C</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Tốc độ gió</span>
+              <span class="telemetry-val" id="tel-wind">3.2 m/s</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Hướng gió</span>
+              <span class="telemetry-val" id="tel-wind-dir">Đông Bắc</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Áp suất khí quyển</span>
+              <span class="telemetry-val" id="tel-press">1014 hPa</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Chỉ số bức xạ UV</span>
+              <span class="telemetry-val" id="tel-uv">5 (Vừa phải)</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Tầm nhìn xa</span>
+              <span class="telemetry-val" id="tel-vis">9.5 km</span>
+            </div>
+            <div class="telemetry-box">
+              <span class="telemetry-label">Xác suất có mưa</span>
+              <span class="telemetry-val" id="tel-rain">15% (0.0mm)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: SO SÁNH THỜI TIẾT (WEATHER COMPARISON: 2 TO 5 PROVINCES) -->
+      <div class="tab-pane" id="tab-compare">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fa-solid fa-code-compare"></i>
+              So Sánh Thời Tiết Giữa Các Tỉnh Thành (Chọn từ 2 đến 5 tỉnh)
+            </h3>
+            <span class="compare-selected-counter" id="compare-counter-badge">Đã chọn: 3 / 5 tỉnh</span>
+          </div>
+
+          <!-- Province Selector Chips -->
+          <div class="compare-selector-box">
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
+              Bấm vào tên địa phương bên dưới để thêm/bớt khỏi bảng so sánh (Tối thiểu 2, tối đa 5):
+            </p>
+            <div class="compare-pills-container" id="compare-chips-container">
+              <!-- 34 province chips injected here -->
+            </div>
+          </div>
+
+          <!-- Time Horizon Filter -->
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:700;color:var(--text-muted);">Khung thời gian so sánh:</span>
+            <button class="district-pill active" onclick="App.setCompareHorizon('now')">Hiện tại</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('1h')">+1 Giờ</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('3h')">+3 Giờ</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('6h')">+6 Giờ</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('12h')">+12 Giờ</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('24h')">+24 Giờ</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('3d')">3 Ngày</button>
+            <button class="district-pill" onclick="App.setCompareHorizon('7d')">7 Ngày</button>
+          </div>
+
+          <!-- Comparative Matrix Table -->
+          <div class="comparison-table-wrapper">
+            <table class="compare-table" id="compare-matrix-table">
+              <thead>
+                <tr id="compare-table-head">
+                  <th>Thuộc tính</th>
+                  <!-- Injected headers -->
+                </tr>
+              </thead>
+              <tbody id="compare-table-body">
+                <!-- Injected comparative rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Comparative Charts -->
+          <div class="grid-2">
+            <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;">
+              <h4 style="font-size:14px;color:var(--text-main);margin-bottom:12px;">Biểu Đồ So Sánh Nhiệt Độ (24h)</h4>
+              <div style="position:relative;height:260px;">
+                <canvas id="compareTempChart"></canvas>
+              </div>
+            </div>
+            <div style="border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;">
+              <h4 style="font-size:14px;color:var(--text-main);margin-bottom:12px;">So Sánh Khả Năng Mưa & Độ Ẩm</h4>
+              <div style="position:relative;height:260px;">
+                <canvas id="compareRainChart"></canvas>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="card">
-            <div class="card-header">
-              <h3><i class="fa-solid fa-award"></i> Kết Luận Thực Nghiệm & Tối Ưu Hệ Thống</h3>
+      <!-- TAB 4: CHẤT LƯỢNG KHÔNG KHÍ (AIR QUALITY) -->
+      <div class="tab-pane" id="tab-airquality">
+        <div class="aqi-hero-card">
+          <div class="aqi-dial-container">
+            <div class="aqi-circle-wrap">
+              <svg width="190" height="190" viewBox="0 0 190 190">
+                <circle cx="95" cy="95" r="75" stroke="#e2e8f0" stroke-width="14" fill="none"></circle>
+                <circle id="aqi-gauge-arc" cx="95" cy="95" r="75" stroke="#f97316" stroke-width="14" fill="none" stroke-dasharray="471" stroke-dashoffset="350" stroke-linecap="round"></circle>
+              </svg>
+              <div class="aqi-center-text">
+                <span class="aqi-val-center" id="aqi-main-val">69</span>
+                <span class="aqi-label-center" id="aqi-main-label">AQI (US)</span>
+              </div>
             </div>
-            <div class="card-body">
-              <ul class="insight-list">
-                <li><strong>Mô hình Random Forest Regressor</strong> đạt kết quả vượt trội với hệ số xác định <code>R² = 0.742</code> và sai số tuyệt đối <code>MAE = 6.42 µg/m³</code>, giảm 58% sai số so với mô hình cơ sở Baseline.</li>
-                <li><strong>Mạng Neural Network (MLP)</strong> theo sát với <code>R² = 0.701</code>, nắm bắt tốt các tương tác phi tuyến tính giữa nhiệt độ, độ ẩm và bụi mịn.</li>
-                <li><strong>Kiểm thử tải đồng thời (20 CCU):</strong> Nhờ cấu trúc Singleton trong RAM, độ trễ suy luận chỉ xấp xỉ <code>0.48 ms/mẫu</code>, phản hồi tức thời dưới 10ms trên mọi trình duyệt.</li>
-              </ul>
+            <span class="stat-badge" id="aqi-main-badge" style="background:#fef3c7;color:#d97706;font-size:13px;padding:6px 14px;margin-top:10px;">
+              Kém (Nhóm nhạy cảm)
+            </span>
+          </div>
+
+          <div style="max-width:550px;">
+            <h3 style="font-size:20px;font-weight:800;color:var(--text-main);margin-bottom:8px;">
+              Chất Lượng Không Khí Tại <span id="aqi-city-title">Hà Nội</span>
+            </h3>
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:14px;" id="aqi-health-advice">
+              Trẻ em, người già và người mắc các bệnh hô hấp (hen suyễn) nên hạn chế hoạt động mạnh ngoài trời kéo dài. Người bình thường vẫn có thể tham gia sinh hoạt bình thường.
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span class="checklist-tag"><i class="fa-solid fa-mask-face"></i> Khẩu trang khi ra đường</span>
+              <span class="checklist-tag"><i class="fa-solid fa-wind"></i> Bật máy lọc không khí trong nhà</span>
+              <span class="checklist-tag"><i class="fa-solid fa-person-running"></i> Hạn chế tập gym ngoài đường</span>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- TAB 6: GIỚI THIỆU & HẠN CHẾ -->
-      <section id="tab-about" class="tab-pane">
+        <!-- 6 Pollutants Parameter Breakdown Cards -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-circle-question"></i> Kiến Trúc Hệ Thống & Hướng Dẫn Sử Dụng</h3>
+            <h3 class="card-title"><i class="fa-solid fa-flask-vial"></i> Nồng Độ 6 Chất Ô Nhiễm Tiêu Chuẩn</h3>
           </div>
-          <div class="card-body about-body">
-            <h4>1. Nguồn Gốc & Đặc Điểm Dữ Liệu</h4>
-            <p>Hệ thống sử dụng bộ dữ liệu chuỗi thời gian quan trắc môi trường đô thị trên 23 trạm trọng điểm thuộc 15 tỉnh thành Việt Nam với đầy đủ 6 thông số ô nhiễm ($PM_{2.5}, PM_{10}, CO, NO_2, O_3, SO_2$) và 3 thông số khí tượng (nhiệt độ, độ ẩm, tốc độ gió). Toàn bộ dữ liệu được chia theo thứ tự thời gian (Chronological: 70% Train, 15% Val, 15% Test) loại bỏ hoàn toàn rò rỉ thông tin tương lai.</p>
-
-            <h4>2. Xử Lý Địa Không Gian Với GeoPandas</h4>
-            <p>Hệ thống nạp các ranh giới tỉnh thành và trạm đo vào GeoPandas. Kiểm tra hệ tọa độ CRS EPSG:4326 (WGS84), chuyển đổi sang hệ tọa độ phẳng UTM Zone 48N (EPSG:32648) để tính toán diện tích và khoảng cách Euclid chính xác theo mét.</p>
-
-            <h4>3. Kiến Trúc Tối Ưu 20 Người Dùng Đồng Thời (20 CCU)</h4>
-            <p>Toàn bộ trọng số mô hình ML/DL, scaler và GeoDataFrame được nạp sẵn vào RAM khi server khởi động. Khi có yêu cầu dự báo, hệ thống chỉ mất vài mili-giây để vector hóa và suy luận, không đọc đĩa I/O lặp lại, đáp ứng mượt mà tải 20 CCU trên máy cá nhân.</p>
-
-            <h4>4. Giới Hạn & Tuyên Bố Miễn Trừ</h4>
-            <div class="alert alert-warning">
-              <i class="fa-solid fa-triangle-exclamation"></i>
-              <strong>Tuyên bố quan trọng:</strong> Hệ thống được xây dựng phục vụ mục đích học tập, nghiên cứu và tham khảo ứng dụng Trí tuệ Nhân tạo trong phân tích dữ liệu môi trường. Kết quả dự báo không phải là số liệu đo đạc quy chuẩn pháp lý và không thay thế cho các trạm quan trắc chuẩn quốc gia của Tổng cục Môi trường / Bộ Tài nguyên và Môi trường.
-            </div>
+          <div class="pollutants-grid" id="pollutants-grid-container">
+            <!-- Injected by JS: PM2.5, PM10, CO, NO2, SO2, O3 -->
           </div>
         </div>
-      </section>
+
+        <!-- Multi-Province AQI Comparative Bar Chart -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-chart-simple"></i> So Sánh Chỉ Số AQI Giữa Các Địa Phương Được Chọn</h3>
+          </div>
+          <div style="position:relative;height:280px;">
+            <canvas id="compareAqiChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: DỰ BÁO BỤI MỊN AI (AI DUST FORECAST) -->
+      <div class="tab-pane" id="tab-aiforecast">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              Dự Báo Bụi Mịn PM2.5 Đa Bước 48 Giờ Bằng Machine Learning
+            </h3>
+            <div style="display:flex;gap:6px;">
+              <button class="district-pill active" id="btn-model-rf" onclick="App.selectMlModel('Random_Forest')">Random Forest (Tốt nhất)</button>
+              <button class="district-pill" id="btn-model-nn" onclick="App.selectMlModel('Neural_Network')">Neural Network (MLP)</button>
+              <button class="district-pill" id="btn-model-base" onclick="App.selectMlModel('Baseline_Persistence')">Baseline</button>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">
+            Chuỗi thời gian quá khứ 48h (nét đứt) kết hợp dự báo 48h tới (nét liền) kèm khoảng tin cậy &plusmn;&sigma; cho <strong id="ml-selected-city">Hà Nội</strong>:
+          </p>
+          <div style="position:relative;height:340px;">
+            <canvas id="forecastChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Model Evaluation Metrics Table -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-scale-balanced"></i> Bảng Đánh Giá Hiệu Năng Mô Hình (Quy Chuẩn ML)</h3>
+          </div>
+          <div class="comparison-table-wrapper">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Mô hình AI</th>
+                  <th>Kiến trúc kỹ thuật</th>
+                  <th>MAE (&mu;g/m³)</th>
+                  <th>RMSE (&mu;g/m³)</th>
+                  <th>R² Score</th>
+                  <th>Thời gian Train</th>
+                  <th>Độ trễ suy luận</th>
+                </tr>
+              </thead>
+              <tbody id="metrics-table-body">
+                <!-- Injected by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: BẢN ĐỒ THỜI TIẾT (WEATHER MAP) -->
+      <div class="tab-pane" id="tab-map">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-map-location-dot"></i> Bản Đồ Khí Tượng & Chất Lượng Không Khí Toàn Quốc</h3>
+            <div class="map-layer-toggles">
+              <button class="map-layer-btn active" onclick="App.setMapLayer('temp')">Nhiệt độ (°C)</button>
+              <button class="map-layer-btn" onclick="App.setMapLayer('aqi')">Chất lượng không khí (AQI)</button>
+              <button class="map-layer-btn" onclick="App.setMapLayer('rain')">Khả năng mưa (%)</button>
+              <button class="map-layer-btn" onclick="App.setMapLayer('wind')">Tốc độ gió (m/s)</button>
+            </div>
+          </div>
+          <div id="weather-leaflet-map"></div>
+        </div>
+      </div>
+
+      <!-- TAB 7: KHÁM PHÁ – ĐI CHƠI (SMART OUTDOOR RECOMMENDATION) -->
+      <div class="tab-pane" id="tab-outdoor">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fa-solid fa-compass"></i>
+              Gợi Ý Địa Điểm & Khung Giờ Đi Chơi Ngoài Trời (Đánh giá theo 10 tiêu chí)
+            </h3>
+            <div style="font-size:12px;color:var(--text-muted);">
+              Sắp xếp theo: <strong>Điểm thuận lợi cao nhất</strong>
+            </div>
+          </div>
+
+          <!-- Activity Filter Buttons -->
+          <div class="activity-filters-row" id="activity-filters-container">
+            <button class="activity-filter-btn active" onclick="App.filterActivity('all')">
+              <i class="fa-solid fa-shapes"></i> Tất cả hoạt động
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('walk')">
+              <i class="fa-solid fa-person-walking"></i> Đi dạo / Cà phê
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('run')">
+              <i class="fa-solid fa-person-running"></i> Chạy bộ
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('cycling')">
+              <i class="fa-solid fa-bicycle"></i> Đạp xe
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('picnic')">
+              <i class="fa-solid fa-utensils"></i> Dã ngoại / Picnic
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('travel')">
+              <i class="fa-solid fa-camera"></i> Du lịch khám phá
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('beach')">
+              <i class="fa-solid fa-umbrella-beach"></i> Tắm biển / Nghỉ dưỡng
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('hiking')">
+              <i class="fa-solid fa-mountain"></i> Leo núi / Trekking
+            </button>
+            <button class="activity-filter-btn" onclick="App.filterActivity('sports')">
+              <i class="fa-solid fa-futbol"></i> Thể thao ngoài trời
+            </button>
+          </div>
+
+          <!-- Outdoor Recommendation Cards Grid -->
+          <div class="outdoor-cards-grid" id="outdoor-full-grid">
+            <!-- 34 province outdoor cards injected here -->
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
-  <!-- Mobile Bottom Navigation Bar -->
+  <!-- MOBILE BOTTOM NAVIGATION (CHUYỂN TAB NHANH TRÊN ĐIỆN THOẠI) -->
   <nav class="mobile-bottom-nav">
-    <button class="mobile-nav-btn active" data-tab="tab-overview">
-      <i class="fa-solid fa-chart-pie"></i>
+    <button class="mobile-nav-btn active" onclick="App.switchTab('tab-overview')">
+      <i class="fa-solid fa-house-chimney-window"></i>
       <span>Tổng quan</span>
     </button>
-    <button class="mobile-nav-btn" data-tab="tab-map">
+    <button class="mobile-nav-btn" onclick="App.switchTab('tab-weather')">
+      <i class="fa-solid fa-cloud-sun"></i>
+      <span>Thời tiết</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="App.switchTab('tab-compare')">
+      <i class="fa-solid fa-code-compare"></i>
+      <span>So sánh</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="App.switchTab('tab-airquality')">
+      <i class="fa-solid fa-smog"></i>
+      <span>AQI</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="App.switchTab('tab-map')">
       <i class="fa-solid fa-map-location-dot"></i>
       <span>Bản đồ</span>
     </button>
-    <button class="mobile-nav-btn" data-tab="tab-forecast">
-      <i class="fa-solid fa-wand-magic-sparkles"></i>
-      <span>Dự báo AI</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-results">
-      <i class="fa-solid fa-chart-line"></i>
-      <span>Kết quả</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-evaluation">
-      <i class="fa-solid fa-scale-balanced"></i>
-      <span>Đánh giá</span>
-    </button>
-    <button class="mobile-nav-btn" data-tab="tab-about">
-      <i class="fa-solid fa-book-open"></i>
-      <span>Hệ thống</span>
+    <button class="mobile-nav-btn" onclick="App.switchTab('tab-outdoor')">
+      <i class="fa-solid fa-compass"></i>
+      <span>Đi chơi</span>
     </button>
   </nav>
 
-  <!-- =========================================================================
-       MODAL 1: PHÂN TÍCH CHUYÊN SÂU BỤI MỊN PM2.5 (KHI BẤM Ô PM2.5)
-       ========================================================================= -->
-  <div id="modal-pm25-detail" class="modal-backdrop">
-    <div class="modal-card modal-lg">
+  <!-- MODAL DIALOGS CHO 3 Ô THỐNG KÊ (PM2.5, Nhiệt độ & Độ ẩm, Hạ tầng Geopandas) -->
+  <div class="modal-overlay" id="stat-modal-overlay">
+    <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-microscope text-cyan"></i> Phân Tích Chuyên Sâu Bụi Mịn PM2.5 & Tác Động Sức Khỏe</h3>
-        <button class="modal-close" data-modal="modal-pm25-detail">&times;</button>
+        <h3 id="stat-modal-title"><i class="fa-solid fa-circle-info"></i> Thông Tin Chi Tiết</h3>
+        <button class="modal-close-btn" onclick="App.closeStatModal()">&times;</button>
       </div>
-      <div class="modal-body">
-        <div class="modal-highlight-box">
-          <h4><i class="fa-solid fa-scale-balanced text-cyan"></i> Tiêu Chuẩn Nồng Độ Bụi Mịn PM2.5 (24h)</h4>
-          <p>Bụi PM2.5 là các hạt lơ lửng có đường kính khí động học &le; 2.5 µm (bằng 1/30 sợi tóc). Đây là chất gây ô nhiễm không khí nguy hiểm nhất tới sức khỏe con người.</p>
-        </div>
-
-        <div class="modal-grid-2">
-          <div class="modal-metric-box">
-            <span class="title">Quy Chuẩn Việt Nam (QCVN 05:2023)</span>
-            <strong class="val" style="color:#0284c7;">50 µg/m³</strong>
-            <small style="display:block; color:#64748b; margin-top:4px;">Ngưỡng trung bình 24 giờ</small>
-          </div>
-          <div class="modal-metric-box">
-            <span class="title">Khuyến Cáo Y Tế Thế Giới (WHO 2021)</span>
-            <strong class="val" style="color:#0d9488;">15 µg/m³</strong>
-            <small style="display:block; color:#64748b; margin-top:4px;">Mục tiêu bảo vệ sức khỏe tối ưu</small>
-          </div>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-heart-pulse"></i> Cơ Chế Xâm Nhập & Tác Động Sinh Học</h5>
-        <p style="margin-bottom:12px; line-height:1.6;">
-          Do kích thước siêu nhỏ, các hạt PM2.5 có thể vượt qua hàng rào lông rung niêm mạc mũi và khí quản, <strong>đi thẳng vào tận phế nang phổi</strong> và khuếch tán trực tiếp vào mao mạch máu. Quá trình này gây ra phản ứng viêm toàn thân, kích thích hình thành mảng xơ vữa động mạch, gia tăng đột quỵ não, thiếu máu cơ tim và thúc đẩy đột biến tế bào dẫn đến ung thư phổi.
-        </p>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-industry"></i> Cơ Cấu Nguồn Phát Thải PM2.5 Tại Các Đô Thị Việt Nam</h5>
-        <div style="background:#f8fafc; border-radius:8px; padding:12px; border:1px solid #e2e8f0; margin-bottom:16px;">
-          <div style="margin-bottom:8px;">
-            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:3px;">
-              <span>Giao thông cơ giới (Xe máy cũ, ô tô diesel):</span>
-              <strong style="color:#0284c7;">45%</strong>
-            </div>
-            <div style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
-              <div style="width:45%; height:100%; background:linear-gradient(90deg, #0284c7, #06b6d4);"></div>
-            </div>
-          </div>
-          <div style="margin-bottom:8px;">
-            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:3px;">
-              <span>Hoạt động xây dựng, đào đường & bụi cuốn:</span>
-              <strong style="color:#0284c7;">25%</strong>
-            </div>
-            <div style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
-              <div style="width:25%; height:100%; background:linear-gradient(90deg, #0284c7, #06b6d4);"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:3px;">
-              <span>Đốt rơm rạ ngoại thành, đốt rác & công nghiệp lân cận:</span>
-              <strong style="color:#0284c7;">30%</strong>
-            </div>
-            <div style="height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
-              <div style="width:30%; height:100%; background:linear-gradient(90deg, #0284c7, #06b6d4);"></div>
-            </div>
-          </div>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-shield-virus"></i> Khuyến Nghị Phòng Ngừa Y Tế</h5>
-        <div style="background:#ecfeff; border:1px solid #a5f3fc; border-radius:8px; padding:12px; font-size:0.88rem; color:#0e7490; line-height:1.6;">
-          • Khi nồng độ PM2.5 &gt; 35.4 µg/m³: Luôn đeo khẩu trang lọc bụi mịn chuẩn <strong>N95, KN95 hoặc KF94</strong> khi di chuyển ngoài đường.<br>
-          • Trong gia đình: Đóng kín cửa sổ vào buổi sáng sớm, bật máy lọc không khí có màng lọc HEPA tiêu chuẩn H13.<br>
-          • Nhóm đối tượng nhạy cảm (trẻ nhỏ, người lớn tuổi, phụ nữ có thai, người có tiền sử hen suyễn) cần hạn chế tập thể dục ngoài trời khi AQI &ge; Kém.
-        </div>
+      <div class="modal-body" id="stat-modal-body">
+        <!-- Injected dynamic content -->
       </div>
     </div>
   </div>
 
-  <!-- =========================================================================
-       MODAL 2: KHÍ TƯỢNG, NGHỊCH NHIỆT & TƯƠNG QUAN BỤI (KHI BẤM Ô NHIỆT ĐỘ/ĐỘ ẨM)
-       ========================================================================= -->
-  <div id="modal-meteo-detail" class="modal-backdrop">
-    <div class="modal-card modal-lg">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-temperature-half text-cyan"></i> Phân Tích Khí Tượng, Nghịch Nhiệt & Tương Quan Bụi Mịn</h3>
-        <button class="modal-close" data-modal="modal-meteo-detail">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-highlight-box">
-          <h4><i class="fa-solid fa-wind text-cyan"></i> Cơ Chế Tương Tác Khí Tượng - Chất Lượng Không Khí Đô Thị</h4>
-          <p>Nồng độ bụi mịn PM2.5 không chỉ phụ thuộc vào lượng phát thải mà chịu chi phối cực kỳ mạnh mẽ bởi các yếu tố khí tượng vi mô: hiện tượng nghịch nhiệt, độ ẩm tương đối và tốc độ gió đối lưu.</p>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-cloud-arrow-down"></i> Hiện Tượng Nghịch Nhiệt Tầng Mặt (Temperature Inversion)</h5>
-        <p style="margin-bottom:12px; line-height:1.6;">
-          Thông thường, nhiệt độ không khí giảm dần theo độ cao (trung bình giảm 0.65°C mỗi 100m). Nhờ đó, không khí ấm sát mặt đất bốc lên cao tạo chuyển động đối lưu giúp phát tán và pha loãng bụi mịn.<br><br>
-          Tuy nhiên, vào mùa đông, vào ban đêm trời quang mây, mặt đất bị mất nhiệt bức xạ rất nhanh, làm <strong>lớp không khí sát mặt đất lạnh hơn lớp không khí phía trên</strong>. Hiện tượng này tạo thành một <strong>"chiếc nắp đậy khí quyển"</strong> giữ chặt toàn bộ khói bụi xe cộ, sinh hoạt ở tầng sát mặt đất (dưới 200m), khiến nồng độ PM2.5 tăng vọt lên mức Nguy hại vào sáng sớm.
-        </p>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-droplet"></i> Tác Động Của Độ Ẩm Tương Đối (% RH)</h5>
-        <div class="modal-grid-2">
-          <div class="modal-metric-box">
-            <span class="title">Độ Ẩm Cao (&gt; 75 - 85% RH)</span>
-            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Hạt sol khí hút ẩm (hygroscopic growth), tăng kích thước quang học gây sương mù quang hóa, đồng thời xúc tác phản ứng oxy hóa pha lỏng tạo nitrate/sulfate thứ cấp.</p>
-          </div>
-          <div class="modal-metric-box">
-            <span class="title">Tốc Độ Gió Đối Lưu</span>
-            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Gió lặng (&lt; 1.5 m/s) làm ô nhiễm tích tụ cục bộ. Khi có đợt gió mùa Đông Bắc tràn về (&gt; 3.5 m/s), không khí được xáo trộn mạnh mẽ và nhanh chóng sạch trở lại.</p>
-          </div>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-clock"></i> Khung Giờ Sinh Hoạt An Toàn Theo Diễn Biến Khí Tượng</h5>
-        <div style="background:#fefce8; border:1px solid #fef08a; border-radius:8px; padding:12px; font-size:0.88rem; color:#854d0e; line-height:1.6;">
-          ⚠️ <strong>05:00 - 08:30 Sáng:</strong> Thời điểm nghịch nhiệt mạnh nhất, tuyệt đối <strong>tránh tập thể dục ngoài trời</strong> vào mùa đông.<br>
-          ✅ <strong>13:00 - 16:30 Chiều:</strong> Bức xạ mặt trời hun nóng bề mặt, phá vỡ lớp nghịch nhiệt, không khí đối lưu thông thoáng nhất trong ngày.
-        </div>
-      </div>
-    </div>
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-notification" id="toast-notification">
+    <i class="fa-solid fa-circle-check" style="color:var(--accent-cyan);font-size:16px;"></i>
+    <span id="toast-message">Đã cập nhật dữ liệu quan trắc mới nhất!</span>
   </div>
 
-  <!-- =========================================================================
-       MODAL 3: HẠ TẦNG GEOPANDAS & MẠNG LƯỚI 23 TRẠM (KHI BẤM Ô GEOPANDAS)
-       ========================================================================= -->
-  <div id="modal-geo-detail" class="modal-backdrop">
-    <div class="modal-card modal-lg">
-      <div class="modal-header">
-        <h3><i class="fa-solid fa-satellite text-cyan"></i> Kiến Trúc Địa Không Gian GeoPandas & Mạng Lưới 23 Trạm Quan Trắc</h3>
-        <button class="modal-close" data-modal="modal-geo-detail">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-highlight-box">
-          <h4><i class="fa-solid fa-map-location-dot text-cyan"></i> Nền Tảng Phân Tích Không Gian & Hệ Tọa Độ Chuẩn</h4>
-          <p>Hệ thống tích hợp thư viện GeoPandas xử lý các lớp đối tượng ranh giới tỉnh thành và 23 trạm quan trắc trên toàn quốc, bảo đảm tính toán không gian chính xác tuyệt đối.</p>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-compass"></i> Chuyển Đổi Hệ Tọa Độ Trắc Địa (CRS)</h5>
-        <div class="modal-grid-2">
-          <div class="modal-metric-box">
-            <span class="title">Hệ Tọa Độ Cầu: EPSG:4326 (WGS84)</span>
-            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Đơn vị độ (Degrees: Kinh độ / Vĩ độ). Sử dụng để thu thập dữ liệu định vị GPS và tương thích chuẩn hiển thị bản đồ Leaflet / OpenStreetMap.</p>
-          </div>
-          <div class="modal-metric-box">
-            <span class="title">Hệ Phẳng: EPSG:32648 (UTM Zone 48N)</span>
-            <p style="font-size:0.85rem; color:#334155; margin-top:6px; line-height:1.5;">Đơn vị mét (m). GeoPandas chuyển đổi sang UTM Zone 48N để tính diện tích đa giác các vùng (km²) và khoảng cách Euclid chính xác giữa các trạm đo.</p>
-          </div>
-        </div>
-
-        <h5 class="modal-section-title"><i class="fa-solid fa-server"></i> Tối Ưu Singleton Đảm Bảo 20 CCU</h5>
-        <div style="background:#f0fdfa; border:1px solid #99f6e4; border-radius:8px; padding:12px; font-size:0.88rem; color:#0f766e; line-height:1.6;">
-          Toàn bộ GeoDataFrame ranh giới tỉnh thành và vị trí 23 trạm được nạp sẵn vào RAM khi máy chủ khởi động. Nhờ cấu trúc Singleton trong bộ nhớ, các truy vấn không gian (khoảng cách, lọc vùng đệm) chỉ mất dưới 2 mili-giây, bảo đảm hệ thống vận hành trơn tru và đáp ứng trên 20 người dùng truy cập đồng thời.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CDN Scripts: Leaflet & Chart.js -->
+  <!-- SCRIPTS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  
-  <!-- Project Scripts -->
-  <script src="js/embedded_data.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/embedded_data.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
 </body>
 </html>
